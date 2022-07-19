@@ -1,9 +1,17 @@
-import {Wrapper} from './Post.styles'
+import {Wrapper, Photo, PostInfo} from './Post.styles'
 
 function Post() {
 
     return <Wrapper>
-        post
+        <Photo>
+            post
+        </Photo>
+        <PostInfo>
+            user
+        </PostInfo>
+        <div className={'heart-container'}>
+            heart
+        </div>
     </Wrapper>
 }
 
