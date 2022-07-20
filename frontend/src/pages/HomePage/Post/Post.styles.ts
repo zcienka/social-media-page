@@ -40,7 +40,9 @@ export const Wrapper = styled.div`
     .login-date-container {
       display: flex;
       flex-direction: row;
+
       .user {
+        color: #343434; // off black
         font-size: 16px;
         font-weight: bold;
         margin: 16px 0;
@@ -56,11 +58,12 @@ export const Wrapper = styled.div`
         margin: 16px 0 16px 0;
         align-items: center;
       }
-    //}
-    
-    //.caption {
-    //  display: flex;
-    //  flex-direction: row;
+    }
+    .caption {
+      font-size: 16px;
+      font-weight: bold;
+      color: #343434; // off black
+      margin-bottom: 16px;
     }
   }
 

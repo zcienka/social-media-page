@@ -1,10 +1,10 @@
 import styled from "styled-components"
 
 export const Wrapper = styled.div`
-  background-color: #A7ABB0;
   height: 64px;
-  width: 100vw;
-
+  width: 100%;
+  border-bottom: 2px solid #D9D9D9; // light grey
+  
   .main-container {
     display: flex;
     flex-direction: row;
@@ -19,21 +19,25 @@ export const Wrapper = styled.div`
       margin-left: 16px;
     }
 
-    .icon-container {
+    .button-container {
       align-items: center;
       display: flex;
       height: 100%;
       justify-content: end;
       width: 50%;
       
-      .icon {
+      .button {
         display: flex;
-        color: #343434; // off black
-        font-size: 48px;
+        color: #FAF9F6; // off white
+        font-size: 24px;
         transition: background-color 300ms ease-in-out 100ms;
         border-radius: 100px;
-        padding: 4px;
+        padding: 10px 16px;
         margin-right: 12px;
+        background-color: #3F8EFC;
+        font-family: 'Raleway', sans-serif;
+        font-weight: bold;
+        
 
         :hover {
           background-color: #6D6D6D;
@@ -41,24 +45,5 @@ export const Wrapper = styled.div`
       }
     }
   }
-  
 
-
-
-`
-
-export const MenuItems = styled.div`
-  color: red;
-  
-  .visible {
-      position: absolute;
-      background-color: grey;
-      right: 50px;
-      top: 64px;
-    
-    }
-    .not-visible {
-      display: none;
-      color: blue;
-    }
 `
