@@ -20,27 +20,45 @@ export const Wrapper = styled.div`
     }
 
     .icon-container {
-      align-content: center;
+      align-items: center;
       display: flex;
       height: 100%;
       justify-content: end;
       width: 50%;
-
+      
       .icon {
-        color: #343434;
-        height: 100%;
-        font-size: 40px;
-        margin-right: 16px;
+        display: flex;
+        color: #343434; // off black
+        font-size: 48px;
+        transition: background-color 300ms ease-in-out 100ms;
+        border-radius: 100px;
+        padding: 4px;
+        margin-right: 12px;
+
+        :hover {
+          background-color: #6D6D6D;
+        }
       }
     }
   }
+  
 
 
-  @media screen and (min-width: 900px) {
 
-  }
 `
 
-export const MenuIcon = styled.div`
-
+export const MenuItems = styled.div`
+  color: red;
+  
+  .visible {
+      position: absolute;
+      background-color: grey;
+      right: 50px;
+      top: 64px;
+    
+    }
+    .not-visible {
+      display: none;
+      color: blue;
+    }
 `
