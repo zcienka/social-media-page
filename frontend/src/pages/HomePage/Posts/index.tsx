@@ -3,6 +3,7 @@ import {useEffect} from 'react'
 import {getPosts} from '../../../features/postsSlice'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import {PostsList} from '../../../features/postsSlice'
+import Post from '../Post'
 
 function Posts() {
     const posts = useAppSelector(state => state.posts)
@@ -11,10 +12,11 @@ function Posts() {
     useEffect(() => {
         dispatch(getPosts())
     }, [dispatch])
+    console.log({posts})
 
     return <Wrapper>
         {posts.entities.map((post: PostsList) => (
-            <h2>{post.body}</h2>
+            <Post {...post} key={post.id}/>
         ))}
     </Wrapper>
 }

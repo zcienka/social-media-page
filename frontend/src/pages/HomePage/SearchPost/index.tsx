@@ -1,5 +1,4 @@
 import {Wrapper} from './SearchPost.styles'
-// import image from '../../../imgs/indeks.jpg'
 import SearchIcon from '@mui/icons-material/Search'
 
 function Navbar() {
@@ -11,7 +10,6 @@ function Navbar() {
             </div>
         </div>
     </Wrapper>
-
 }
 
 export default Navbar

@@ -1,6 +1,6 @@
 import {Wrapper} from './Navbar.styles'
 import {Menu} from '@mui/icons-material'
-import {useState} from "react"
+import {useState} from 'react'
 
 function Navbar() {
 

@@ -1,9 +1,11 @@
 import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
 
 export interface PostsList {
-    id: number,
-    body: string,
-    value: number,
+    id: string,
+    caption: string,
+    date: string,
+    username: string,
+    image: string,
 }
 
 interface PostsState {
