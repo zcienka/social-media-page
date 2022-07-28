@@ -10,7 +10,7 @@ function Post(props: PostsList) {
     return <Wrapper>
         <div className={'container'}>
             <Photo>
-                <img src={props.image} alt={''}/>
+                <img src={'http://127.0.0.1:8000' + props.image} alt={''}/>
             </Photo>
 
             <div className={'post-info-container'}>

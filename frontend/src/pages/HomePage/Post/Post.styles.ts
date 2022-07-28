@@ -3,7 +3,8 @@ import styled from "styled-components"
 export const Wrapper = styled.div`
   height: 100%;
   border-radius: 16px;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Roboto', sans-serif;
+
   margin: 16px 8px 8px 8px;
 
   @media screen and (min-width: 700px) {
@@ -11,7 +12,7 @@ export const Wrapper = styled.div`
   }
 
   @media screen and (max-width: 999px) {
-    border: 2px solid #D9D9D9; // light grey
+    border: 1px solid #D9D9D9; // light grey
   }
 
   @media screen and (min-width: 1000px) {
@@ -20,7 +21,7 @@ export const Wrapper = styled.div`
 
     .container {
       width: 640px;
-      border: 2px solid #D9D9D9;
+      border: 1px solid #D9D9D9;
       border-radius: 16px;
     }
   }
@@ -32,10 +33,8 @@ export const Wrapper = styled.div`
   }
 
   .post-info-container {
-    //display: flex;
-    //flex-direction: row;
-    border-bottom: 2px solid #D9D9D9;
-    padding: 8px 16px 0 16px;
+    border-bottom: 1px solid #D9D9D9;
+    padding: 8px 16px 0 16px; 
 
     .login-date-container {
       display: flex;
@@ -84,7 +83,6 @@ export const Wrapper = styled.div`
 `
 
 export const Photo = styled.div`
-  color: red;
   height: 320px;
   border-radius: 16px;
 

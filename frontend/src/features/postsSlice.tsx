@@ -1,4 +1,5 @@
 import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
+import axios from 'axios'
 
 export interface PostsList {
     id: string,
@@ -19,7 +20,11 @@ const initialState = {
 } as PostsState
 
 export const getPosts = createAsyncThunk(
-    'users/getUsers',
+    'posts/getPosts',
+    // async () => {
+    //     const response = axios.get('http://127.0.0.1:8000/api/posts/')
+    //     return response
+    // }
     async () => {
         return await fetch('http://127.0.0.1:8000/api/posts/').then(
             (res) => res.json()

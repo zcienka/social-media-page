@@ -34,23 +34,12 @@ export const Wrapper = styled.div`
       }
 
       p {
-        font-family: 'Raleway', sans-serif;
+        font-family: 'Roboto', sans-serif;
         color: #5d5e5e; //  dark-grey
         font-size: 16px;
         font-weight: bold;
       }
     }
   }
-
 `
 
-// interface StyleProps {
-//     image?: string;
-// }
-//
-// export const Icon = styled.div<StyleProps>`
-//   background-image: url(${props => props.image});
-//   display: flex;
-//   width: 100px;
-//   height: 100px;
-// `;

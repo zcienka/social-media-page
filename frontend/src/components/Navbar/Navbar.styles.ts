@@ -31,13 +31,12 @@ export const Wrapper = styled.div`
         color: #FAF9F6; // off white
         font-size: 24px;
         transition: background-color 300ms ease-in-out 100ms;
-        border-radius: 100px;
+        border-radius: 12px;
         padding: 10px 16px;
         margin-right: 12px;
         background-color: #3F8EFC;
-        font-family: 'Raleway', sans-serif;
+        font-family: 'Roboto', sans-serif;
         font-weight: bold;
-        
 
         :hover {
           background-color: #6D6D6D;

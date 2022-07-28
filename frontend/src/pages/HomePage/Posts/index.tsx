@@ -12,7 +12,10 @@ function Posts() {
     useEffect(() => {
         dispatch(getPosts())
     }, [dispatch])
-    console.log({posts})
+
+    // useEffect(() => {
+    //     dispatch(getToken())
+    // }, [dispatch])
 
     return <Wrapper>
         {posts.entities.map((post: PostsList) => (
