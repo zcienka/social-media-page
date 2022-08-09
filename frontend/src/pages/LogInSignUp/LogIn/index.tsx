@@ -1,10 +1,10 @@
 import {Wrapper} from '../LogInSignUp.styles'
 import React, {useEffect, useState} from "react";
-import {useAppDispatch, useAppSelector} from "../../../app/hooks"
+import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import {useNavigate} from "react-router-dom"
 import {authenticateUser} from "../../../features/authSlice"
 import LinearProgress from '@mui/material/LinearProgress'
-import ErrorIcon from '@mui/icons-material/Error';
+import ErrorIcon from '@mui/icons-material/Error'
 
 export interface credentials {
     username: string,
@@ -18,7 +18,7 @@ const initialState = {
 
 function LogIn() {
     const [userInfo, setUserInfo] = useState<credentials>(initialState)
-    const token = useAppSelector(state => state.account)
+    const token = useAppSelector(state => state.auth)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -28,7 +28,7 @@ function LogIn() {
             dispatch(authenticateUser(userInfo))
         }
     }
-    console.log({token})
+    // console.log({token})
 
     useEffect(() => {
         if (token.loading === 'succeeded') {
@@ -38,9 +38,11 @@ function LogIn() {
 
     return <Wrapper>
         <div className={'container'}>
-            {token.loading === 'pending' ?
-                <LinearProgress className={'buffering'}/> :
-                <LinearProgress className={'hidden'}/>}
+            <div className="buffering-container">
+                {token.loading === 'pending' ?
+                    <LinearProgress className={'buffering'}/> :
+                    <LinearProgress className={'hidden'}/>}
+            </div>
             <div className='form-container'>
                 <h1 className={''}>Log in</h1>
                 <p className={'log-in-info'}>Please enter your username and password to log in</p>

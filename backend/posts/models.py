@@ -1,21 +1,15 @@
-from django.db import models
 import uuid
-
-
-class Users(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    username = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.username
+from django.db import models
+from users.models import User
 
 
 class Posts(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     caption = models.TextField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
-    username = models.ForeignKey(Users, on_delete=models.CASCADE)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, null=False)
     image = models.ImageField(upload_to='posts')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    username = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.caption[:100]

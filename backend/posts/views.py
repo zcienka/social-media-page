@@ -1,39 +1,16 @@
-from rest_framework.response import Response
-from .utils import get_posts, create_post, get_users
-from rest_framework.decorators import api_view
+from rest_framework import generics, permissions, authentication
+from .serializers import PostSerializer
+from .models import Posts
 
 
-@api_view(['GET'])
-def get_routes(request):
-    routes = [
-        {
-            'Endpoint': '/posts/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of posts'
-        },
+class PostListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Posts.objects.all()
+    serializer_class = PostSerializer
 
-        # {
-        #     'Endpoint': '/users/',
-        #     'method': 'GET',
-        #     'body': None,
-        #     'description': 'Returns an array of posts'
-        # },
-    ]
-    return Response(routes)
+    def perform_create(self, serializer):
+        user = serializer.validated_data.get('user')
+        username = user.username
+        serializer.save(username=username)
 
 
-@api_view(['GET', 'POST'])
-def get_all_posts(request):
-    if request.method == 'GET':
-        return get_posts(request)
-
-    if request.method == 'POST':
-        return create_post(request)
-
-
-@api_view(['GET'])
-def get_all_users(request):
-    if request.method == 'GET':
-        return get_users(request)
-
+post_list_create_view = PostListCreateAPIView.as_view()

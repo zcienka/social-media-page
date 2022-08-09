@@ -1,8 +1,7 @@
 import {Wrapper} from './Posts.styles'
 import {useEffect} from 'react'
-import {getPosts} from '../../../features/postsSlice'
+import {getPosts, PostListResponse} from '../../../features/postsSlice'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
-import {PostsList} from '../../../features/postsSlice'
 import Post from '../Post'
 
 function Posts() {
@@ -13,12 +12,8 @@ function Posts() {
         dispatch(getPosts())
     }, [dispatch])
 
-    // useEffect(() => {
-    //     dispatch(getToken())
-    // }, [dispatch])
-
     return <Wrapper>
-        {posts.entities.map((post: PostsList) => (
+        {posts.results.map((post: PostListResponse) => (
             <Post {...post} key={post.id}/>
         ))}
     </Wrapper>

@@ -1,16 +1,15 @@
 import {Wrapper, Photo} from './Post.styles'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import {useState} from 'react'
-import {PostsList} from '../../../features/postsSlice'
+import {PostListResponse} from '../../../features/postsSlice'
 
 
-function Post(props: PostsList) {
+function Post(props: PostListResponse) {
     const [likePost, setLikePost] = useState(false)
-
     return <Wrapper>
         <div className={'container'}>
             <Photo>
-                <img src={'http://127.0.0.1:8000' + props.image} alt={''}/>
+                <img src={props.image} alt={''}/>
             </Photo>
 
             <div className={'post-info-container'}>

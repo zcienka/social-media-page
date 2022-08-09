@@ -21,23 +21,10 @@ const initialState = {
 export const authenticateUser = createAsyncThunk(
     'authenticate/authenticateUser',
     async (userInfo: credentials) => {
-            const {data} = await axios.post('http://127.0.0.1:8000/api/token/', userInfo)
+            const {data} = await axios.post('http://127.0.0.1:8000/api/user/token/', userInfo)
             return data
     }
 )
-
-
-// export const createAccount = createAsyncThunk(
-//     'account/createAccount',
-//     async (userInfo: credentials) => {
-//         try {
-//             const response = await axios.post('http://127.0.0.1:8000/api/token/', userInfo)
-//             return response.data
-//         } catch (error) {
-//             console.log(error)
-//         }
-//     }
-// )
 
 export const authSlice = createSlice({
     name: 'authenticate',

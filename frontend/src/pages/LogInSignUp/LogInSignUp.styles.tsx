@@ -28,18 +28,21 @@ export const Wrapper = styled.div`
       border-radius: 16px;
     }
 
-    .buffering {
-      background-color: #D9D9D9;
-      color: #FAF9F6;
-      margin: -2px 0;
-      
-      @media screen and (min-width: 1000px) {
-        margin: -2px 8px;
+    .buffering-container {
+      min-height: 4px;
+
+      .buffering {
+        background-color: #D9D9D9;
+        color: #FAF9F6;
+
+        @media screen and (min-width: 1000px) {
+          margin: 0 10px;
+        }
       }
-    }
-    
-    .hidden {
-      display: none;
+
+      .hidden {
+        display: none;
+      }
     }
 
     .form-container {
@@ -89,13 +92,13 @@ export const Wrapper = styled.div`
           border-color: #3F8EFC;
         }
       }
-      
+
       .invalid-credentials {
         color: red;
         display: flex;
         align-items: center;
         font-size: 16px;
-        
+
         span {
           display: flex;
           align-items: center;
@@ -104,7 +107,7 @@ export const Wrapper = styled.div`
       }
 
       .button-container {
-          display: flex;
+        display: flex;
         flex-direction: column;
         flex-grow: 1;
         justify-content: flex-end;
@@ -122,7 +125,7 @@ export const Wrapper = styled.div`
           padding: 12px 8px;
           width: 100%;
           cursor: pointer;
-          
+
           :hover {
             background-color: #056cfb;
           }

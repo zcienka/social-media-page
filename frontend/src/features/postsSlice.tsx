@@ -1,7 +1,6 @@
 import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
-import axios from 'axios'
 
-export interface PostsList {
+export interface PostListResponse {
     id: string,
     caption: string,
     date: string,
@@ -9,22 +8,25 @@ export interface PostsList {
     image: string,
 }
 
-interface PostsState {
-    entities: PostsList[]
-    loading: 'idle' | 'pending' | 'succeeded' | 'failed'
+export interface PostState {
+    results: PostListResponse[],
+    loading: 'idle' | 'pending' | 'succeeded' | 'failed',
 }
 
-const initialState = {
-    entities: [],
+const initialState: PostState = {
+    results: [],
     loading: 'idle',
-} as PostsState
+}
+
+export type ApiList<TypeGeneric> = {
+    count: number
+    next: string
+    previous: string
+    results: TypeGeneric[]
+}
 
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
-    // async () => {
-    //     const response = axios.get('http://127.0.0.1:8000/api/posts/')
-    //     return response
-    // }
     async () => {
         return await fetch('http://127.0.0.1:8000/api/posts/').then(
             (res) => res.json()
@@ -36,16 +38,18 @@ export const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        addPost: (state, action: PayloadAction<PostsList>) => {
-            state.entities.push(action.payload)
+        addPost: (state, {payload}: PayloadAction<ApiList<PostListResponse>>) => {
+            const { results } = payload
+            state.results.push(...results)
         },
     },
     extraReducers: builder => {
         builder.addCase(getPosts.pending, (state) => {
-            state.loading  = 'pending'
+            state.loading = 'pending'
         })
         builder.addCase(getPosts.fulfilled, (state, action) => {
-            state.entities = action.payload
+            const { results } = action.payload
+            state.results.push(...results)
             state.loading = 'succeeded'
         })
         builder.addCase(getPosts.rejected, (state) => {
