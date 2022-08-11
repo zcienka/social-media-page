@@ -18,8 +18,6 @@ const initialState = {
     loading: 'idle',
 } as UserState
 
-
-
 export const registerUser = createAsyncThunk(
     'register/registerUser',
     async (userInfo: credentials) => {

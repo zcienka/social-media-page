@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction, createAsyncThunk, createAction} from '@reduxjs/toolkit'
 
 export interface PostListResponse {
     id: string,
@@ -10,27 +10,35 @@ export interface PostListResponse {
 
 export interface PostState {
     results: PostListResponse[],
+    count: number
+    next: string | null
+    previous: string | null
     loading: 'idle' | 'pending' | 'succeeded' | 'failed',
 }
 
 const initialState: PostState = {
     results: [],
+    count: 0,
+    next: null,
+    previous: null,
     loading: 'idle',
 }
 
 export type ApiList<TypeGeneric> = {
     count: number
-    next: string
-    previous: string
+    next: string | null
+    previous: string | null
     results: TypeGeneric[]
 }
 
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
-    async () => {
-        return await fetch('http://127.0.0.1:8000/api/posts/').then(
-            (res) => res.json()
-        )
+    async (url: string | null) => {
+        if (url !== null) {
+            return await fetch(url).then(
+                (res) => res.json()
+            )
+        }
     }
 )
 
@@ -39,8 +47,11 @@ export const postsSlice = createSlice({
     initialState,
     reducers: {
         addPost: (state, {payload}: PayloadAction<ApiList<PostListResponse>>) => {
-            const { results } = payload
-            state.results.push(...results)
+            const {results, previous, next, count} = payload
+            state.results = results
+            state.previous = previous
+            state.next = next
+            state.count = count
         },
     },
     extraReducers: builder => {
@@ -48,8 +59,13 @@ export const postsSlice = createSlice({
             state.loading = 'pending'
         })
         builder.addCase(getPosts.fulfilled, (state, action) => {
-            const { results } = action.payload
+            const {results, previous, next, count} = action.payload
             state.results.push(...results)
+            state.results = (Array.from(new Map(state.results.map((x) => [x['id'], x])).values()))
+
+            state.previous = previous
+            state.next = next
+            state.count = count
             state.loading = 'succeeded'
         })
         builder.addCase(getPosts.rejected, (state) => {
