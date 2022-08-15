@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import LinearProgress from '@mui/material/LinearProgress'
 import {useNavigate} from 'react-router-dom'
-import {registerUser} from '../../../features/userSlice'
+import {registerUser} from '../../../features/registerSlice'
 
 export interface credentials {
     username: string,
@@ -17,7 +17,7 @@ const initialState = {
 
 function SignUp() {
     const [userInfo, setUserInfo] = useState<credentials>(initialState)
-    const response = useAppSelector(state => state.user)
+    const response = useAppSelector(state => state.register)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -25,6 +25,7 @@ function SignUp() {
         e.preventDefault()
         if (userInfo !== initialState) {
             dispatch(registerUser(userInfo))
+            localStorage.setItem('currentUser', JSON.stringify(initialState.username))
         }
     }
 
@@ -33,7 +34,6 @@ function SignUp() {
             navigate('/', {replace: true})
         }
     }, [navigate, response])
-    console.log(response.loading)
 
     return <Wrapper>
         <div className={'container'}>

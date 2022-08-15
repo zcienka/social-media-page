@@ -1,10 +1,14 @@
 import {Wrapper, Photo} from './Post.styles'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import {useState} from 'react'
-import {PostListResponse} from '../../../features/postsSlice'
+import {PostList} from '../../../features/postsSlice'
 import moment from 'moment'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
-function Post(props: PostListResponse) {
+
+function Post(props: PostList) {
     const [likePost, setLikePost] = useState(false)
     const dateAdded = moment(props.date).fromNow()
 

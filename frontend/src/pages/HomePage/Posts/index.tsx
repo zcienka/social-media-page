@@ -1,6 +1,5 @@
-import {Wrapper} from './Posts.styles'
 import React, {useEffect, useState, useRef, useCallback} from 'react'
-import {getPosts, PostListResponse, PostState} from '../../../features/postsSlice'
+import {getPosts, PostList} from '../../../features/postsSlice'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import Post from '../Post'
 
@@ -35,15 +34,15 @@ function Posts() {
     }, [posts.next, hasMore])
     const observer = useRef<IntersectionObserver | null>(null)
 
-    return <Wrapper>
-        {posts.results.map((post: PostListResponse, index: number) => {
+    return <>
+        {posts.results.map((post: PostList, index: number) => {
             if (posts.results.length === index + 1) {
             return <span ref={lastBookElementRef} key={post.id}> <Post {...post} /></span>
         } else {
             return <Post {...post} key={post.id}/>
         }
         })}
-    </Wrapper>
+    </>
 }
 
 export default Posts

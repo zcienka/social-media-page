@@ -1,12 +1,12 @@
 import {Wrapper} from '../LogInSignUp.styles'
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState} from 'react'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
-import {useNavigate} from "react-router-dom"
-import {authenticateUser} from "../../../features/authSlice"
+import {useNavigate} from 'react-router-dom'
+import {authenticateUser} from '../../../features/authSlice'
 import LinearProgress from '@mui/material/LinearProgress'
 import ErrorIcon from '@mui/icons-material/Error'
 
-export interface credentials {
+export interface Credentials {
     username: string,
     password: string,
 }
@@ -17,7 +17,7 @@ const initialState = {
 }
 
 function LogIn() {
-    const [userInfo, setUserInfo] = useState<credentials>(initialState)
+    const [userInfo, setUserInfo] = useState<Credentials>(initialState)
     const token = useAppSelector(state => state.auth)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
@@ -28,17 +28,17 @@ function LogIn() {
             dispatch(authenticateUser(userInfo))
         }
     }
-    // console.log({token})
 
     useEffect(() => {
         if (token.loading === 'succeeded') {
-            navigate("/", {replace: true})
+            navigate('/', {replace: true})
+            localStorage.setItem('currentUser', JSON.stringify(userInfo.username))
         }
-    }, [navigate, token])
+    }, [userInfo.username, navigate, token])
 
     return <Wrapper>
         <div className={'container'}>
-            <div className="buffering-container">
+            <div className='buffering-container'>
                 {token.loading === 'pending' ?
                     <LinearProgress className={'buffering'}/> :
                     <LinearProgress className={'hidden'}/>}
@@ -48,13 +48,13 @@ function LogIn() {
                 <p className={'log-in-info'}>Please enter your username and password to log in</p>
                 <label htmlFor='username'>Username</label>
                 <input type='text' id='username' onChange={(e) => {
-                    setUserInfo((info: credentials) => {
+                    setUserInfo((info: Credentials) => {
                         return {...info, username: e.target.value}
                     })
                 }}/>
                 <label htmlFor='password'>Password</label>
                 <input type='password' id='password' onChange={(e) => {
-                    setUserInfo((info: credentials) => {
+                    setUserInfo((info: Credentials) => {
                         return {...info, password: e.target.value}
                     })
                 }}/>

@@ -1,15 +1,33 @@
-import {createSlice, PayloadAction, createAsyncThunk, createAction} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
+import axios from 'axios'
+import {PostAdd} from '../components/UploadPost'
 
-export interface PostListResponse {
-    id: string,
-    caption: string,
-    date: string,
+export interface UsersLike {
     username: string,
+}
+
+export interface Comment {
+    date: Date,
+    id: string,
+    user: string,
+    username: string,
+    description: string,
+}
+
+export interface PostList {
+    caption: string,
+    comment: Comment[],
+    date: string,
+    id: string,
     image: string,
+    total_likes: number,
+    user: string,
+    username: string,
+    users_like: UsersLike[],
 }
 
 export interface PostState {
-    results: PostListResponse[],
+    results: PostList[],
     count: number
     next: string | null
     previous: string | null
@@ -42,17 +60,27 @@ export const getPosts = createAsyncThunk(
     }
 )
 
+export const addPost = createAsyncThunk(
+    'posts/addPost',
+    async (post: PostAdd) => {
+        console.log({post})
+        const {data} = await axios.post('http://127.0.0.1:8000/api/posts/', post)
+        console.log(data)
+        return data
+    }
+)
+
 export const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        addPost: (state, {payload}: PayloadAction<ApiList<PostListResponse>>) => {
-            const {results, previous, next, count} = payload
-            state.results = results
-            state.previous = previous
-            state.next = next
-            state.count = count
-        },
+        // addPost: (state, {payload}: PayloadAction<ApiList<PostList>>) => {
+        //     const {results, previous, next, count} = payload
+        //     state.results = results
+        //     state.previous = previous
+        //     state.next = next
+        //     state.count = count
+        // },
     },
     extraReducers: builder => {
         builder.addCase(getPosts.pending, (state) => {

@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
 import React from 'react'
-import {credentials} from '../pages/LogInSignUp/LogIn'
+import {Credentials} from '../pages/LogInSignUp/LogIn'
 
 export interface Token {
     refresh: string,
@@ -20,7 +20,7 @@ const initialState = {
 
 export const authenticateUser = createAsyncThunk(
     'authenticate/authenticateUser',
-    async (userInfo: credentials) => {
+    async (userInfo: Credentials) => {
             const {data} = await axios.post('http://127.0.0.1:8000/api/user/token/', userInfo)
             return data
     }

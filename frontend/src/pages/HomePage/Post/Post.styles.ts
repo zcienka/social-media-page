@@ -4,8 +4,8 @@ export const Wrapper = styled.div`
   height: 100%;
   border-radius: 16px;
   font-family: 'Roboto', sans-serif;
-
   margin: 16px 8px 8px 8px;
+  padding-bottom: 16px;
 
   @media screen and (min-width: 700px) {
     margin: 0 24px;
@@ -20,6 +20,7 @@ export const Wrapper = styled.div`
     justify-content: center;
 
     .container {
+      cursor: pointer;
       width: 640px;
       border: 1px solid #D9D9D9;
       border-radius: 16px;
@@ -29,12 +30,13 @@ export const Wrapper = styled.div`
   @media screen and (min-width: 2000px) {
     .container {
       width: 720px;
+      cursor: pointer;
     }
   }
 
   .post-info-container {
     border-bottom: 1px solid #D9D9D9;
-    padding: 8px 16px 0 16px; 
+    padding: 8px 16px 0 16px;
 
     .login-date-container {
       display: flex;

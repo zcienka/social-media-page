@@ -4,14 +4,12 @@ export const Wrapper = styled.div`
   background-color: #FAF9F6; // off-white
   font-family: 'Roboto', sans-serif;
 
-
   @media screen and (min-width: 1000px) {
     align-items: center;
     display: flex;
     height: calc(100vh - 64px);
     justify-content: center;
   }
-
 
   .container {
     height: calc(100vh - 64px);
