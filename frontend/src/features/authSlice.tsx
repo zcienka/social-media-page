@@ -29,11 +29,7 @@ export const authenticateUser = createAsyncThunk(
 export const authSlice = createSlice({
     name: 'authenticate',
     initialState,
-    reducers: {
-        authenticateUser: (state, action: PayloadAction<Token>) => {
-            state.entities.push(action.payload)
-        },
-    },
+    reducers: {},
     extraReducers: builder => {
         builder.addCase(authenticateUser.pending, (state) => {
             state.loading = 'pending'

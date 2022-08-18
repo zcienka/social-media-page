@@ -1,64 +1,54 @@
 import {Wrapper} from './UploadPost.styles'
-import React, {useState, useEffect, useRef, useCallback} from 'react'
-import {addPost, getPosts} from '../../features/postsSlice'
-import {useAppDispatch, useAppSelector} from '../../app/hooks'
-import File from 'react-dropzone'
+import React, {useState, useEffect} from 'react'
+import {addPost, Comment, PostList} from '../../features/postsSlice'
+import {useAppDispatch} from '../../app/hooks'
 import CloseIcon from '@mui/icons-material/Close'
-import PostList from '../../features/postsSlice'
-import {useNavigate} from "react-router-dom";
-import {getUserInfo} from "../../features/userSlice";
+import {useNavigate} from "react-router-dom"
 
 interface Props {
     image: string,
     alt: string,
 }
 
-export interface PostAdd {
-    caption: string | null,
-    image: string | null,
-    username: string | null,
-    comment: any[] ,
-    users_like: any[]
-}
-
-const initialState = {
+export const initialState = {
     caption: null,
+    comments: [],
+    date: null,
+    id: null,
     image: null,
+    total_likes: null,
+    user: null,
     username: null,
-    comment: [],
     users_like: [],
 }
 
 function UploadPost(file: Props) {
     const dispatch = useAppDispatch()
     const [showPopup, setShowPopup] = useState(true)
-    const [post, setPost] = useState<PostAdd>(initialState)
+    const [post, setPost] = useState<PostList>(initialState)
     const navigate = useNavigate()
 
     const publishPost = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
         if (post.caption !== null && post.image !== null && post.username !== null) {
-                setPost((post: PostAdd) => {
-                    return {...post, image: file.image}
-                })
+            setPost((post: PostList) => {
+                return {...post, image: file.image}
+            })
             dispatch(addPost(post))
         }
     }
 
     function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
         if (e.target.value === '') {
-            setPost((post: PostAdd) => {
+            setPost((post: PostList) => {
                 return {...post, caption: null}
             })
         } else {
-            setPost((post: PostAdd) => {
+            setPost((post: PostList) => {
                 return {...post, caption: e.target.value}
             })
         }
-        setPost((post: PostAdd) => {
-            return {...post, image: file.image}
-        })
     }
 
     useEffect(() => {
@@ -66,14 +56,13 @@ function UploadPost(file: Props) {
             navigate('/login', {replace: true})
         } else {
             const currentUser: string = JSON.parse(localStorage.getItem('currentUser') || '{}')
-            setPost((post: PostAdd) => {
+            setPost((post: PostList) => {
                 return {...post, username: currentUser}
             })
-            setPost((post: PostAdd) => {
+            setPost((post: PostList) => {
                 return {...post, image: file.image}
             })
         }
-
     }, [file.image, navigate])
 
 

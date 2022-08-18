@@ -4,7 +4,6 @@ import React from 'react'
 import {credentials} from '../pages/LogInSignUp/SignUp'
 
 export interface User {
-
     username: string,
     // password: string,
 }
@@ -30,8 +29,7 @@ export const registerUser = createAsyncThunk(
 export const registerSlice = createSlice({
     name: 'register',
     initialState,
-    reducers: {
-    },
+    reducers: {},
     extraReducers: builder => {
         builder.addCase(registerUser.pending, (state) => {
             state.loading = 'pending'

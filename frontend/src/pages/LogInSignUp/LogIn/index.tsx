@@ -2,9 +2,10 @@ import {Wrapper} from '../LogInSignUp.styles'
 import React, {useEffect, useState} from 'react'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import {useNavigate} from 'react-router-dom'
-import {authenticateUser} from '../../../features/authSlice'
+import {authenticateUser, Token} from '../../../features/authSlice'
 import LinearProgress from '@mui/material/LinearProgress'
 import ErrorIcon from '@mui/icons-material/Error'
+import jwtDecode from "jwt-decode";
 
 export interface Credentials {
     username: string,
@@ -14,6 +15,14 @@ export interface Credentials {
 const initialState = {
     username: '',
     password: '',
+}
+
+export interface JWTToken {
+    token_type: string,
+    exp: number,
+    iat: number,
+    jti: string,
+    user_id: number,
 }
 
 function LogIn() {
@@ -31,8 +40,15 @@ function LogIn() {
 
     useEffect(() => {
         if (token.loading === 'succeeded') {
+            const currentUser: Token = JSON.parse(localStorage.getItem('profile') || '{}')
+            const jwtToken: JWTToken = jwtDecode(currentUser.refresh)
+
+            const user = {
+                username: userInfo.username,
+                userId: jwtToken.user_id,
+            }
+            localStorage.setItem('currentUser', JSON.stringify(user))
             navigate('/', {replace: true})
-            localStorage.setItem('currentUser', JSON.stringify(userInfo.username))
         }
     }, [userInfo.username, navigate, token])
 

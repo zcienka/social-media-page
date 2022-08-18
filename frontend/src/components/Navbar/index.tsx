@@ -1,8 +1,8 @@
 import {Wrapper, DragAndDropWrapper} from './Navbar.styles'
-import React, {useState, useEffect, useRef, useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
-import {DropzoneProps, useDropzone} from 'react-dropzone'
+import {useDropzone} from 'react-dropzone'
 import File from 'react-dropzone'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import CloseIcon from '@mui/icons-material/Close'
@@ -20,15 +20,11 @@ function Navbar() {
 
             setShowDragAndDrop(false)
             setShowPostDetails(true)
-            reader.onabort = () => console.log('file reading was aborted')
-            reader.onerror = () => console.log('file reading has failed')
-            reader.onload = function (e) {
-                console.log('e.target!.result')
 
+            reader.onload = function (e) {
                 setImage(e.target!.result as string)
             }
             reader.readAsDataURL(file);
-            // reader.readAsArrayBuffer(file)
             return file
         })
     }, [])
@@ -40,7 +36,6 @@ function Navbar() {
         multiple: false,
         onDrop
     })
-
 
     return <Wrapper>
         {showDragAndDrop ?

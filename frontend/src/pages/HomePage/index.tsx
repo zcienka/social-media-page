@@ -1,5 +1,5 @@
 import SearchPost from './SearchPost'
-import Posts from './Posts'
+import Posts from '../../components/Posts'
 import React from 'react'
 
 function HomePage() {

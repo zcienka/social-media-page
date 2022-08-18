@@ -43,29 +43,32 @@ export const Wrapper = styled.div`
       flex-direction: row;
 
       .user {
+        align-items: center;
         color: #343434; // off black
         font-size: 16px;
         font-weight: bold;
         margin: 16px 0;
-        align-items: center;
         padding-right: 16px;
       }
 
       .date-added {
+        align-items: center;
+        color: #5d5e5e;
         display: flex;
         font-size: 16px;
         font-weight: bold;
-        color: #5d5e5e;
         margin: 16px 0 16px 0;
-        align-items: center;
       }
     }
+
     .caption {
+      color: #343434; // off black
       font-size: 16px;
       font-weight: bold;
-      color: #343434; // off black
       margin-bottom: 16px;
     }
+
+
   }
 
   .heart-container {
@@ -82,6 +85,30 @@ export const Wrapper = styled.div`
   .grey {
     color: #D9D9D9;
   }
+
+  .comments {
+    //margin: 16px 0 16px 0;
+    //margin-left: 16px;
+    //margin-bottom: 16px;
+    margin: 0 16px 16px 16px;
+    
+    .username {
+      font-weight: bold;
+    }
+    
+    .single-comment {
+      display: flex;
+      flex-direction: row;
+      padding-bottom: 4px;
+      //border: 2px solid red;
+      
+      .description {
+        margin-left: 8px;
+        color: #5D5E5E;
+      }
+    }
+  }
+
 `
 
 export const Photo = styled.div`
@@ -105,5 +132,7 @@ export const Photo = styled.div`
     object-fit: cover;
     border-radius: 16px 16px 0 0;
   }
+
+
 `
 

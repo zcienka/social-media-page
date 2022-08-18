@@ -4,6 +4,9 @@ import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import LinearProgress from '@mui/material/LinearProgress'
 import {useNavigate} from 'react-router-dom'
 import {registerUser} from '../../../features/registerSlice'
+import jwtDecode from "jwt-decode"
+import {JWTToken} from "../LogIn"
+import {Token} from "../../../features/authSlice";
 
 export interface credentials {
     username: string,
@@ -17,7 +20,7 @@ const initialState = {
 
 function SignUp() {
     const [userInfo, setUserInfo] = useState<credentials>(initialState)
-    const response = useAppSelector(state => state.register)
+    const token = useAppSelector(state => state.register)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -25,20 +28,31 @@ function SignUp() {
         e.preventDefault()
         if (userInfo !== initialState) {
             dispatch(registerUser(userInfo))
+            // const userState = useAppSelector(state => state.user)
+            // const [user, setUser] = useState<UserState>(userState)
             localStorage.setItem('currentUser', JSON.stringify(initialState.username))
         }
     }
 
     useEffect(() => {
-        if (response.loading === 'succeeded') {
+        if (token.loading === 'succeeded') {
+            const profile: Token = JSON.parse(localStorage.getItem('profile') || '{}')
+            const jwtToken: JWTToken = jwtDecode(profile.refresh)
+
+            const user = {
+                username: userInfo.username,
+                userId: jwtToken.user_id,
+            }
+
+            localStorage.setItem('currentUser', JSON.stringify(user))
             navigate('/', {replace: true})
         }
-    }, [navigate, response])
+    }, [userInfo.username, navigate, token])
 
     return <Wrapper>
         <div className={'container'}>
             <div className='buffering-container'>
-                {response.loading === 'pending' ?
+                {token.loading === 'pending' ?
                     <LinearProgress className={'buffering'}/> :
                     <LinearProgress className={'hidden'}/>}
             </div>

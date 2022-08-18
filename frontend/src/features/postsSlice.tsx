@@ -1,29 +1,26 @@
 import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
-import {PostAdd} from '../components/UploadPost'
 
-export interface UsersLike {
-    username: string,
-}
 
 export interface Comment {
-    date: Date,
-    id: string,
-    user: string,
-    username: string,
-    description: string,
+    date: string | null,
+    id: string | null,
+    user: string | null,
+    username: string | null,
+    description: string | null,
+    post: string | null,
 }
 
 export interface PostList {
-    caption: string,
-    comment: Comment[],
-    date: string,
-    id: string,
-    image: string,
-    total_likes: number,
-    user: string,
-    username: string,
-    users_like: UsersLike[],
+    caption: string | null,
+    comments: string[],
+    date: string | null,
+    id: string | null,
+    image: string | null,
+    total_likes: number | null,
+    user: string | null,
+    username: string | null,
+    users_like: number[],
 }
 
 export interface PostState {
@@ -51,7 +48,7 @@ export type ApiList<TypeGeneric> = {
 
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
-    async (url: string | null) => {
+    async (url: string | null = 'http://127.0.0.1:8000') => {
         if (url !== null) {
             return await fetch(url).then(
                 (res) => res.json()
@@ -62,10 +59,25 @@ export const getPosts = createAsyncThunk(
 
 export const addPost = createAsyncThunk(
     'posts/addPost',
-    async (post: PostAdd) => {
-        console.log({post})
+    async (post: PostList) => {
         const {data} = await axios.post('http://127.0.0.1:8000/api/posts/', post)
-        console.log(data)
+        return data
+    }
+)
+
+export const updatePost = createAsyncThunk(
+    'posts/updatePost',
+    async (post: PostList) => {
+        const {data} = await axios.put('http://127.0.0.1:8000/api/posts/' + post.id + '/update/', post)
+        return data
+    }
+)
+
+export const getPost = createAsyncThunk(
+    'posts/getPost',
+    async (id: string) => {
+        const {data} = await axios.get(`http://127.0.0.1:8000/api/posts/${id}`)
+        console.log({data})
         return data
     }
 )
@@ -73,15 +85,7 @@ export const addPost = createAsyncThunk(
 export const postsSlice = createSlice({
     name: 'posts',
     initialState,
-    reducers: {
-        // addPost: (state, {payload}: PayloadAction<ApiList<PostList>>) => {
-        //     const {results, previous, next, count} = payload
-        //     state.results = results
-        //     state.previous = previous
-        //     state.next = next
-        //     state.count = count
-        // },
-    },
+    reducers: {},
     extraReducers: builder => {
         builder.addCase(getPosts.pending, (state) => {
             state.loading = 'pending'
@@ -89,7 +93,7 @@ export const postsSlice = createSlice({
         builder.addCase(getPosts.fulfilled, (state, action) => {
             const {results, previous, next, count} = action.payload
             state.results.push(...results)
-            state.results = (Array.from(new Map(state.results.map((x) => [x['id'], x])).values()))
+            state.results = Array.from(new Map(state.results.map((x) => [x['id'], x])).values())
 
             state.previous = previous
             state.next = next
@@ -99,7 +103,32 @@ export const postsSlice = createSlice({
         builder.addCase(getPosts.rejected, (state) => {
             state.loading = 'failed'
         })
+
+        builder.addCase(updatePost.pending, (state) => {
+            state.loading = 'pending'
+        })
+        builder.addCase(updatePost.fulfilled, (state, action) => {
+            const {results} = action.payload
+            state.results = state.results.map((post) => post.id === results ? results : post)
+            state.loading = 'succeeded'
+        })
+        builder.addCase(updatePost.rejected, (state) => {
+            state.loading = 'failed'
+        })
+
+        builder.addCase(getPost.pending, (state) => {
+            state.loading = 'pending'
+        })
+        builder.addCase(getPost.fulfilled, (state, action) => {
+            state.results.push(action.payload)
+            state.results = Array.from(new Map(state.results.map((x) => [x['id'], x])).values())
+            state.loading = 'succeeded'
+        })
+        builder.addCase(getPost.rejected, (state) => {
+            state.loading = 'failed'
+        })
     },
 })
 
 export default postsSlice.reducer
+

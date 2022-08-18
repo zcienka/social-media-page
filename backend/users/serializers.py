@@ -1,8 +1,8 @@
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-
-# from .models import User
 
 class UsersSerializer(ModelSerializer):
     class Meta:
@@ -12,6 +12,7 @@ class UsersSerializer(ModelSerializer):
             'password',
             'slug',
             'username',
+            'posts_liked',
         ]
 
 
@@ -22,4 +23,5 @@ class UserSerializerBasic(ModelSerializer):
             'slug',
             'username',
             'id',
+            'posts_liked',
         ]
