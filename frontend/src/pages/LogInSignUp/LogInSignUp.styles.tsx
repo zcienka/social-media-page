@@ -136,10 +136,12 @@ export const Wrapper = styled.div`
 
         .log-in-message {
           text-align: end;
+          cursor: pointer;
         }
 
         .sign-up-message {
           margin-top: 16px;
+          cursor: pointer;
         }
       }
     }

@@ -71,11 +71,26 @@ export const Wrapper = styled.div`
 
   }
 
-  .heart-container {
+  .icons {
     display: flex;
-    align-items: end;
-    font-size: 54px;
-    margin-left: 8px;
+    flex-direction: column;
+    border: 2px solid red;
+
+    .heart-container {
+      border: 2px solid red;
+      font-size: 54px;
+      margin-left: 8px;
+    }
+
+    .trash-icon {
+      font-size: 54px;
+      border: 2px solid red;
+      color: #343434;
+
+      :hover {
+        color: #6D6D6D;
+      }
+    }
   }
 
   .red {
@@ -87,28 +102,28 @@ export const Wrapper = styled.div`
   }
 
   .comments {
-    //margin: 16px 0 16px 0;
-    //margin-left: 16px;
-    //margin-bottom: 16px;
+    display: inline-block;
+    height: 60px;
+    white-space: nowrap;
+    overflow: hidden !important;
+
     margin: 0 16px 16px 16px;
-    
+
     .username {
       font-weight: bold;
     }
-    
+
     .single-comment {
       display: flex;
       flex-direction: row;
       padding-bottom: 4px;
-      //border: 2px solid red;
-      
+
       .description {
         margin-left: 8px;
         color: #5D5E5E;
       }
     }
   }
-
 `
 
 export const Photo = styled.div`
@@ -136,3 +151,60 @@ export const Photo = styled.div`
 
 `
 
+export const DeletePostPopup = styled.div`
+  align-items: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.7),
+  rgba(0, 0, 0, 0.7));
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+
+  p {
+    color: #343434;
+    font-weight: bold;
+  }
+
+  .message {
+    background-color: #FAF9F6;
+    border-radius: 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 160px;
+    padding: 24px;
+    width: 240px;
+
+    .buttons {
+      align-items: end;
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+
+      button {
+        background-color: #3F8EFC;
+        border-radius: 12px;
+        border: none;
+        color: #FAF9F6;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 8px 12px;
+
+        :hover {
+          background-color: #056cfb;
+        }
+      }
+
+      .cancel-btn {
+        display: flex;
+        justify-content: end;
+        width: 100%;
+      }
+    }
+  }
+`

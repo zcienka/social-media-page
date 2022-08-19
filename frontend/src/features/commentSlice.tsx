@@ -76,9 +76,9 @@ export const commentsSlice = createSlice({
         })
         builder.addCase(getCommentsByPostId.fulfilled, (state, action) => {
             const {results, previous, next, count} = action.payload
-            console.log({results})
-            state.results = results
-            // state.results = Array.from(new Map(state.results.map((x) => [x['id'], x])).values())
+            state.results.push(...results)
+            state.results = Array.from(new Map(state.results.map((x) => [x['id'], x])).values())
+
             state.previous = previous
             state.next = next
             state.count = count

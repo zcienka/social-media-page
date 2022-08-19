@@ -53,7 +53,7 @@ function UploadPost(file: Props) {
 
     useEffect(() => {
         if (localStorage.getItem('currentUser') === null) {
-            navigate('/login', {replace: true})
+            navigate('/login', {replace: false})
         } else {
             const currentUser: string = JSON.parse(localStorage.getItem('currentUser') || '{}')
             setPost((post: PostList) => {

@@ -77,8 +77,17 @@ export const getPost = createAsyncThunk(
     'posts/getPost',
     async (id: string) => {
         const {data} = await axios.get(`http://127.0.0.1:8000/api/posts/${id}`)
-        console.log({data})
         return data
+    }
+)
+
+export const deletePost = createAsyncThunk(
+    'posts/deletePost',
+    async (id: string | null) => {
+        if (id !== null) {
+            await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`)
+            return id
+        }
     }
 )
 
@@ -125,6 +134,18 @@ export const postsSlice = createSlice({
             state.loading = 'succeeded'
         })
         builder.addCase(getPost.rejected, (state) => {
+            state.loading = 'failed'
+        })
+
+
+        builder.addCase(deletePost.pending, (state) => {
+            state.loading = 'pending'
+        })
+        builder.addCase(deletePost.fulfilled, (state, action) => {
+            state.results = state.results.filter((post: PostList) => post.id !== action.payload)
+            state.loading = 'succeeded'
+        })
+        builder.addCase(deletePost.rejected, (state) => {
             state.loading = 'failed'
         })
     },

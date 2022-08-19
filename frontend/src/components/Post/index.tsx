@@ -1,26 +1,23 @@
-import {Wrapper, Photo} from './Post.styles'
+import {Wrapper, Photo, DeletePostPopup} from './Post.styles'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import React, {useEffect, useState} from 'react'
-import {getPosts, PostList, updatePost} from '../../features/postsSlice'
+import {PostList, updatePost, deletePost} from '../../features/postsSlice'
 import moment from 'moment'
 import {useAppDispatch, useAppSelector} from '../../app/hooks'
 import {useNavigate} from "react-router-dom";
-import {CommentState, getCommentsByPostId} from "../../features/commentSlice";
+import {getCommentsByPostId} from "../../features/commentSlice"
 import {Comment} from "../../features/commentSlice"
+import DeleteIcon from '@mui/icons-material/Delete'
 
 interface userDetails {
     username: string,
     userId: number,
 }
 
-interface Props {
-    post: PostList,
-    comments: CommentState
-}
-
 function Post(props: PostList) {
     const userInfo: userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}')
     const [isPostLiked, setIsPostLiked] = useState(props.users_like.includes(userInfo.userId))
+    const [showDeletePostPopup, setShowDeletePostPopup] = useState(false)
     const [showFullPost, setShowFullPost] = useState(false)
     const dateAdded = moment(props.date).fromNow()
     const [post, setPost] = useState<PostList>(props)
@@ -31,8 +28,6 @@ function Post(props: PostList) {
     useEffect(() => {
         dispatch(getCommentsByPostId(props.id))
     }, [props.id, dispatch])
-
-    console.log({comments})
 
     const likePost = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
         e.preventDefault()
@@ -58,8 +53,22 @@ function Post(props: PostList) {
             navigate(`/post/${post.id}`, {replace: true})
         }
     }, [post.id, navigate, showFullPost])
-
+    //dispatch(deletePost(post.id))
     return <Wrapper>
+        {showDeletePostPopup ? <DeletePostPopup>
+            <div className={'message'}>
+                <p>Do you really want do delete this post?</p>
+                <div className="buttons">
+                    <div className={'delete-btn'}>
+                        <button onClick={() => dispatch(deletePost(post.id))}>Delete</button>
+                    </div>
+                    <div className={'cancel-btn'}>
+                        <button onClick={() => setShowDeletePostPopup((showPopup: boolean) => !showPopup)}>
+                            Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </DeletePostPopup> : ''}
         <div className={'container'}>
             <Photo>
                 {props.image ?
@@ -74,23 +83,28 @@ function Post(props: PostList) {
                 </div>
                 <h2 className={'caption'}>{props.caption}</h2>
             </div>
-            <div onClick={() => setIsPostLiked((likePost: boolean) => !likePost)}>
-                {isPostLiked ? <FavoriteIcon className={'heart-container red'}
-                                             onClick={(e) => dislikePost(e)}/> :
-                    <FavoriteIcon className={'heart-container grey'}
-                                  onClick={(e) => likePost(e)}/>}
+
+            <div className="icons">
+                <div onClick={() => setIsPostLiked((likePost: boolean) => !likePost)}>
+                    {isPostLiked ? <FavoriteIcon className={'heart-container red'}
+                                                 onClick={(e) => dislikePost(e)}/> :
+                        <FavoriteIcon className={'heart-container grey'}
+                                      onClick={(e) => likePost(e)}/>}
+                    <DeleteIcon className={'trash-icon'} onClick={(e) =>
+                        setShowDeletePostPopup((showPopup: boolean) => !showPopup)}/>
+                </div>
             </div>
 
             <div className="comments">
                 {comments.results.map((comment: Comment) => {
-                    return <div className={'single-comment'}>
-                        <p className={'username'}>{comment.username}</p>
-                        <p className={'description'}>{comment.description}</p>
-                    </div>
+                    if (comment.post === props.id) {
+                        return <div className={'single-comment'} key={comment.id}>
+                            <p className={'username'}>{comment.username}</p>
+                            <p className={'description'}>{comment.description}</p>
+                        </div>
+                    }
                 })}
             </div>
-
-
         </div>
     </Wrapper>
 }

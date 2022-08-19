@@ -1,5 +1,5 @@
 import {Wrapper, DragAndDropWrapper} from './Navbar.styles'
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
 import {useDropzone} from 'react-dropzone'
@@ -7,10 +7,21 @@ import File from 'react-dropzone'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import CloseIcon from '@mui/icons-material/Close'
 import UploadPost from "../UploadPost"
+import {useNavigate} from "react-router-dom"
 
 
 function Navbar() {
+    const navigate = useNavigate()
     const [showDragAndDrop, setShowDragAndDrop] = useState(false)
+
+    useEffect(() => {
+        if ((localStorage.getItem('currentUser') === null ||
+            localStorage.getItem('profile') === null) && showDragAndDrop) {
+            setShowDragAndDrop(false)
+            navigate('/login', {replace: false})
+        }
+    }, [showDragAndDrop, navigate])
+
     const [image, setImage] = useState<string | null>('')
     const [showPostDetails, setShowPostDetails] = useState(false)
 

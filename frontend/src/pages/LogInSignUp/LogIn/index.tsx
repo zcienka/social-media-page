@@ -1,7 +1,7 @@
 import {Wrapper} from '../LogInSignUp.styles'
 import React, {useEffect, useState} from 'react'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
-import {useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import {authenticateUser, Token} from '../../../features/authSlice'
 import LinearProgress from '@mui/material/LinearProgress'
 import ErrorIcon from '@mui/icons-material/Error'
@@ -33,7 +33,8 @@ function LogIn() {
 
     const login = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        if (userInfo !== initialState) {
+        if (userInfo.password !== initialState.password &&
+            userInfo.username !== initialState.username) {
             dispatch(authenticateUser(userInfo))
         }
     }
@@ -48,7 +49,7 @@ function LogIn() {
                 userId: jwtToken.user_id,
             }
             localStorage.setItem('currentUser', JSON.stringify(user))
-            navigate('/', {replace: true})
+            navigate('/', {replace: false})
         }
     }, [userInfo.username, navigate, token])
 
@@ -81,7 +82,8 @@ function LogIn() {
                 }
                 <div className={'button-container'}>
                     <button className={'confirm-button'} onClick={(e) => login(e)}>Log in</button>
-                    <p className={'sign-up-message'}>Don't have an account? <span>Sign up</span></p>
+                    <p className={'sign-up-message'}>Don't have an account? <span><Link to={'/signup'}> Sign up</Link> </span>
+                    </p>
                 </div>
             </div>
         </div>

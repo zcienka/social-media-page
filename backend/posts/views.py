@@ -1,11 +1,11 @@
-from rest_framework import generics
-from .serializers import PostSerializer, CommentSerializer
 from .models import Post, Comment
-from django.contrib.auth import get_user_model
-import base64
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
+from .serializers import PostSerializer, CommentSerializer
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.response import Response
+import base64
 import uuid
 
 
@@ -81,5 +81,11 @@ class CommentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         user = get_user_model().objects.get(username=username)
         serializer.save(user=user)
 
+    # def destroy(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     self.perform_destroy(instance)
+    #     return Response(status=status.HTTP_200_OK)
+
 
 comment_detail_update_delete_view = CommentDetailAPIView.as_view()
+
