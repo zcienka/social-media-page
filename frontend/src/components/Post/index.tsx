@@ -4,14 +4,20 @@ import React, {useEffect, useState} from 'react'
 import {PostList, updatePost, deletePost} from '../../features/postsSlice'
 import moment from 'moment'
 import {useAppDispatch, useAppSelector} from '../../app/hooks'
-import {useNavigate} from "react-router-dom";
-import {getCommentsByPostId} from "../../features/commentSlice"
-import {Comment} from "../../features/commentSlice"
+import {useNavigate} from 'react-router-dom';
+import {addComment, CommentSend, getCommentsByPostId} from '../../features/commentSlice'
+import {Comment} from '../../features/commentSlice'
 import DeleteIcon from '@mui/icons-material/Delete'
 
 interface userDetails {
     username: string,
     userId: number,
+}
+
+const commentInitialState = {
+    username: null,
+    description: null,
+    post: null
 }
 
 function Post(props: PostList) {
@@ -21,6 +27,7 @@ function Post(props: PostList) {
     const [showFullPost, setShowFullPost] = useState(false)
     const dateAdded = moment(props.date).fromNow()
     const [post, setPost] = useState<PostList>(props)
+    const [comment, setComment] = useState<CommentSend>(commentInitialState)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const comments = useAppSelector(state => state.comment)
@@ -29,19 +36,33 @@ function Post(props: PostList) {
         dispatch(getCommentsByPostId(props.id))
     }, [props.id, dispatch])
 
-    const likePost = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-        e.preventDefault()
+    useEffect(() => {
+        setComment((prevState) => {
+            return {...prevState, username: userInfo.username}
+        })
+        setComment((prevState) => {
+            return {...prevState, post: props.id}
+        })
+    }, [props.id, userInfo.username])
 
+    const likePost = () => {
         setPost((prevPost: PostList) => {
             return {...prevPost, users_like: [...prevPost.users_like, userInfo.userId]}
         })
     }
 
-    const dislikePost = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-        e.preventDefault()
+    const dislikePost = () => {
         setPost((prevPost: PostList) => {
             return {...prevPost, users_like: [...prevPost.users_like.filter((id) => id !== userInfo.userId)]}
         })
+    }
+
+    const postComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
+
+        if (comment?.description !== null) {
+            dispatch(addComment(comment))
+        }
     }
 
     useEffect(() => {
@@ -50,21 +71,23 @@ function Post(props: PostList) {
 
     useEffect(() => {
         if (showFullPost) {
-            navigate(`/post/${post.id}`, {replace: true})
+            navigate(`/post/${post.id}`, {replace: false})
         }
     }, [post.id, navigate, showFullPost])
-    //dispatch(deletePost(post.id))
+
+
     return <Wrapper>
         {showDeletePostPopup ? <DeletePostPopup>
             <div className={'message'}>
                 <p>Do you really want do delete this post?</p>
-                <div className="buttons">
+                <div className='buttons'>
                     <div className={'delete-btn'}>
                         <button onClick={() => dispatch(deletePost(post.id))}>Delete</button>
                     </div>
                     <div className={'cancel-btn'}>
                         <button onClick={() => setShowDeletePostPopup((showPopup: boolean) => !showPopup)}>
-                            Cancel</button>
+                            Cancel
+                        </button>
                     </div>
                 </div>
             </div>
@@ -84,18 +107,18 @@ function Post(props: PostList) {
                 <h2 className={'caption'}>{props.caption}</h2>
             </div>
 
-            <div className="icons">
+            <div className='icons'>
                 <div onClick={() => setIsPostLiked((likePost: boolean) => !likePost)}>
-                    {isPostLiked ? <FavoriteIcon className={'heart-container red'}
-                                                 onClick={(e) => dislikePost(e)}/> :
-                        <FavoriteIcon className={'heart-container grey'}
-                                      onClick={(e) => likePost(e)}/>}
-                    <DeleteIcon className={'trash-icon'} onClick={(e) =>
-                        setShowDeletePostPopup((showPopup: boolean) => !showPopup)}/>
+                    {isPostLiked ? <FavoriteIcon className={'heart-icon red'} onClick={() => dislikePost()}/> :
+                        <FavoriteIcon className={'heart-icon grey'} onClick={() => likePost()}/>}
                 </div>
+                {props.username === userInfo.username ? <DeleteIcon className={'trash-icon'} onClick={() =>
+                    setShowDeletePostPopup((showPopup: boolean) => !showPopup)}/> : ''}
             </div>
-
-            <div className="comments">
+            <div className={'header'}>
+                <p>Comments</p>
+            </div>
+            <div className='comments'>
                 {comments.results.map((comment: Comment) => {
                     if (comment.post === props.id) {
                         return <div className={'single-comment'} key={comment.id}>
@@ -104,6 +127,13 @@ function Post(props: PostList) {
                         </div>
                     }
                 })}
+            </div>
+            <div className='comment-input'>
+                <input placeholder={'Write a comment'} onChange={(e) =>
+                    setComment((prevState) => {
+                        return {...prevState, description: e.target.value}
+                    })}/>
+                <button onClick={(e) => postComment(e)}>Post</button>
             </div>
         </div>
     </Wrapper>

@@ -82,7 +82,8 @@ function LogIn() {
                 }
                 <div className={'button-container'}>
                     <button className={'confirm-button'} onClick={(e) => login(e)}>Log in</button>
-                    <p className={'sign-up-message'}>Don't have an account? <span><Link to={'/signup'}> Sign up</Link> </span>
+                    <p className={'sign-up-message'}>Don't have an account?
+                        <span><Link to={'/signup'}> Sign up</Link> </span>
                     </p>
                 </div>
             </div>

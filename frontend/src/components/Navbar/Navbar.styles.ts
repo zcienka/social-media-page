@@ -41,6 +41,7 @@ export const Wrapper = styled.div`
       }
     }
 
+
     .icons-container {
       align-items: center;
       display: flex;
@@ -80,7 +81,7 @@ export const DragAndDropWrapper = styled.div`
   justify-content: center;
   position: fixed;
   width: 100vw;
-  
+
   .popup-window {
     background-color: #FAF9F6;
     border-radius: 16px;
@@ -89,7 +90,7 @@ export const DragAndDropWrapper = styled.div`
     height: 640px;
     padding: 8px;
     width: 640px;
-    
+
     .photo-input {
       width: 100%;
     }
@@ -123,7 +124,47 @@ export const DragAndDropWrapper = styled.div`
         color: #FAF9F6;
         font-size: 16px;
       }
+    }
+  }
+`
+
+export const MenuPopup = styled.div`
+  align-items: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+  display: flex;
+  font-family: 'Roboto', sans-serif;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+
+  .popup-window {
+    background-color: #FAF9F6;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100px;
+    padding: 8px;
+    width: 160px;
+    font-size: 16px;
+    
+    .close-icon {
+      display: flex;
+      justify-content: end;
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    li {
+      padding: 0 8px;
+      cursor: pointer;
       
+      :hover {
+        background-color: #D9D9D9;
+      }
     }
   }
 `

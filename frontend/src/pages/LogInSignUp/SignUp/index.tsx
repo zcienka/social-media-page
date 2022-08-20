@@ -33,8 +33,6 @@ function SignUp() {
     const signUp = (e: React.MouseEvent<HTMLButtonElement>) => {
         // setCheckPasswords((checkPasswords) => !checkPasswords)
         setCheckPasswords(true)
-        console.log(repeatPassword)
-        console.log(userInfo.password)
 
         if(repeatPassword === userInfo.password) {
             e.preventDefault()
@@ -90,7 +88,7 @@ function SignUp() {
                 <label htmlFor='repeat-password'>Repeat password</label>
                 <input type='password' id='repeat-password' onChange={(e) => {
                     setCheckPasswords(false)
-                    setRepeatPassword((password: string) => {
+                    setRepeatPassword(() => {
                         return e.target.value
                     })
                 }}/>

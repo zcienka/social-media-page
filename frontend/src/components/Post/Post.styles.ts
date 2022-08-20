@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   border-radius: 16px;
   font-family: 'Roboto', sans-serif;
   margin: 16px 8px 8px 8px;
-  padding-bottom: 16px;
+  padding-top: 16px;
 
   @media screen and (min-width: 700px) {
     margin: 0 24px;
@@ -67,47 +67,61 @@ export const Wrapper = styled.div`
       font-weight: bold;
       margin-bottom: 16px;
     }
-
-
   }
 
   .icons {
     display: flex;
-    flex-direction: column;
-    border: 2px solid red;
+    flex-direction: row;
 
-    .heart-container {
-      border: 2px solid red;
+    .heart-icon {
       font-size: 54px;
-      margin-left: 8px;
-    }
-
-    .trash-icon {
-      font-size: 54px;
-      border: 2px solid red;
-      color: #343434;
+      margin-left: 12px;
 
       :hover {
         color: #6D6D6D;
       }
     }
+
+    .trash-icon {
+      font-size: 54px;
+      color: #D9D9D9;
+
+      :hover {
+        color: #6D6D6D;
+      }
+    }
+
+    .red {
+      color: red;
+
+      :hover {
+        color: #B20000;
+      }
+    }
+
+    .grey {
+      color: #D9D9D9;
+    }
   }
 
-  .red {
-    color: red;
-  }
+  .header {
+    width: 100%;
+    border-bottom: 1px solid #D9D9D9;
 
-  .grey {
-    color: #D9D9D9;
+    p {
+      margin-left: 16px;
+      margin-bottom: 8px;
+    }
   }
 
   .comments {
     display: inline-block;
-    height: 60px;
+    max-height: 140px;
+    min-height: 16px;
     white-space: nowrap;
     overflow: hidden !important;
-
-    margin: 0 16px 16px 16px;
+    width: 100%;
+    padding-left: 16px;
 
     .username {
       font-weight: bold;
@@ -116,12 +130,45 @@ export const Wrapper = styled.div`
     .single-comment {
       display: flex;
       flex-direction: row;
-      padding-bottom: 4px;
+      padding-top: 8px;
 
       .description {
         margin-left: 8px;
         color: #5D5E5E;
       }
+    }
+
+    label {
+      font-size: 20px;
+      color: #343434;
+    }
+  }
+
+  .comment-input {
+    margin: 0 16px 16px 16px;
+    display: flex;
+    flex-direction: row;
+
+    input {
+      border-radius: 12px;
+      border: 1px solid #D9D9D9;
+      font-family: inherit;
+      padding: 12px;
+      width: 100%;
+
+      :active, :focus {
+        border-color: #3F8EFC;
+      }
+    }
+
+    button {
+      background-color: transparent;
+      border: none;
+      color: #3F8EFC;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 16px;
+      padding: 8px 16px;
     }
   }
 `
@@ -147,8 +194,6 @@ export const Photo = styled.div`
     object-fit: cover;
     border-radius: 16px 16px 0 0;
   }
-
-
 `
 
 export const DeletePostPopup = styled.div`
@@ -163,7 +208,7 @@ export const DeletePostPopup = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-
+  
   p {
     color: #343434;
     font-weight: bold;

@@ -39,13 +39,6 @@ const initialState: PostState = {
     loading: 'idle',
 }
 
-export type ApiList<TypeGeneric> = {
-    count: number
-    next: string | null
-    previous: string | null
-    results: TypeGeneric[]
-}
-
 export const getPosts = createAsyncThunk(
     'posts/getPosts',
     async (url: string | null = 'http://127.0.0.1:8000') => {
@@ -60,7 +53,14 @@ export const getPosts = createAsyncThunk(
 export const addPost = createAsyncThunk(
     'posts/addPost',
     async (post: PostList) => {
-        const {data} = await axios.post('http://127.0.0.1:8000/api/posts/', post)
+        const {data} = await axios.post('http://127.0.0.1:8000/api/posts/', {
+            caption: post.caption,
+            comments: post.comments,
+            image: post.image,
+            username: post.username,
+            users_like: post.users_like,
+        })
+        console.log({data})
         return data
     }
 )
@@ -113,6 +113,17 @@ export const postsSlice = createSlice({
             state.loading = 'failed'
         })
 
+        builder.addCase(addPost.pending, (state) => {
+            state.loading = 'pending'
+        })
+        builder.addCase(addPost.fulfilled, (state, action) => {
+            state.results.unshift(action.payload)
+            state.loading = 'succeeded'
+        })
+        builder.addCase(addPost.rejected, (state) => {
+            state.loading = 'failed'
+        })
+
         builder.addCase(updatePost.pending, (state) => {
             state.loading = 'pending'
         })
@@ -136,7 +147,6 @@ export const postsSlice = createSlice({
         builder.addCase(getPost.rejected, (state) => {
             state.loading = 'failed'
         })
-
 
         builder.addCase(deletePost.pending, (state) => {
             state.loading = 'pending'

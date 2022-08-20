@@ -30,7 +30,7 @@ export const Wrapper = styled.div`
   }
 
   .description-container {
-    font-family: 'Heebo', sans-serif;
+    font-family: 'Roboto', sans-serif;
     padding: 16px;
     width: 50%;
     display: flex;
@@ -39,13 +39,14 @@ export const Wrapper = styled.div`
     .close-icon {
       display: flex;
       justify-content: right;
+      cursor: pointer;
     }
 
     textarea {
       background-color: #FAF9F6;
       border-radius: 16px;
       border: 1px solid #D9D9D9;
-      font-family: 'Heebo', sans-serif;
+      font-family: inherit;
       height: 100%;
       padding: 8px;
       resize: none;
@@ -72,7 +73,7 @@ export const Wrapper = styled.div`
         border: 0;
         color: #3F8EFC;
         cursor: pointer;
-        font-family: 'Heebo', sans-serif;
+        font-family: 'Roboto', sans-serif;
         font-size: 16px;
         font-weight: bold;
         text-align: end;
@@ -80,5 +81,4 @@ export const Wrapper = styled.div`
       }
     }
   }
-
 `

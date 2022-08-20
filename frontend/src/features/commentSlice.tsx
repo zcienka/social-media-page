@@ -2,8 +2,9 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
 
 export interface CommentSend {
-    username: string,
-    description: string,
+    username: string | null,
+    description: string | null,
+    post: string | null,
 }
 
 export interface Comment {
@@ -14,6 +15,7 @@ export interface Comment {
     description: string | null,
     post: string | null,
 }
+
 export interface CommentState {
     results: Comment[],
     count: number
@@ -33,8 +35,7 @@ const initialState: CommentState = {
 export const addComment = createAsyncThunk(
     'comment/addComment',
     async (comment: CommentSend) => {
-        const {data} = await axios.post('http://127.0.0.1:8000/api/comments/', comment)
-        // console.log(data)
+            const {data} = await axios.post('http://127.0.0.1:8000/api/posts/comments/', comment)
         return data
     }
 )
@@ -58,13 +59,7 @@ export const commentsSlice = createSlice({
             state.loading = 'pending'
         })
         builder.addCase(addComment.fulfilled, (state, action) => {
-            const {results, previous, next, count} = action.payload
-            state.results.push(...results)
-            // state.results = Array.from(new Map(state.results.map((x) => [x['id'], x])).values())
-
-            state.previous = previous
-            state.next = next
-            state.count = count
+            state.results.unshift(action.payload)
             state.loading = 'succeeded'
         })
         builder.addCase(addComment.rejected, (state) => {

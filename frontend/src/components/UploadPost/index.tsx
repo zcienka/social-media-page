@@ -1,6 +1,6 @@
 import {Wrapper} from './UploadPost.styles'
 import React, {useState, useEffect} from 'react'
-import {addPost, Comment, PostList} from '../../features/postsSlice'
+import {addPost, PostList} from '../../features/postsSlice'
 import {useAppDispatch} from '../../app/hooks'
 import CloseIcon from '@mui/icons-material/Close'
 import {useNavigate} from "react-router-dom"
@@ -22,6 +22,11 @@ export const initialState = {
     users_like: [],
 }
 
+interface UserDetails {
+    username: string,
+    userId: string,
+}
+
 function UploadPost(file: Props) {
     const dispatch = useAppDispatch()
     const [showPopup, setShowPopup] = useState(true)
@@ -36,6 +41,7 @@ function UploadPost(file: Props) {
                 return {...post, image: file.image}
             })
             dispatch(addPost(post))
+            setShowPopup(!showPopup)
         }
     }
 
@@ -55,9 +61,9 @@ function UploadPost(file: Props) {
         if (localStorage.getItem('currentUser') === null) {
             navigate('/login', {replace: false})
         } else {
-            const currentUser: string = JSON.parse(localStorage.getItem('currentUser') || '{}')
+            const currentUser: UserDetails = JSON.parse(localStorage.getItem('currentUser') || '{}')
             setPost((post: PostList) => {
-                return {...post, username: currentUser}
+                return {...post, username: currentUser.username}
             })
             setPost((post: PostList) => {
                 return {...post, image: file.image}

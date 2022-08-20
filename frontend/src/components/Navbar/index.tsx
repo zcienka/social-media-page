@@ -1,4 +1,4 @@
-import {Wrapper, DragAndDropWrapper} from './Navbar.styles'
+import {Wrapper, DragAndDropWrapper, MenuPopup} from './Navbar.styles'
 import React, {useState, useCallback, useEffect} from 'react'
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
@@ -13,6 +13,7 @@ import {useNavigate} from "react-router-dom"
 function Navbar() {
     const navigate = useNavigate()
     const [showDragAndDrop, setShowDragAndDrop] = useState(false)
+    const [showMenuPopup, setShowMenuPopup] = useState(false)
 
     useEffect(() => {
         if ((localStorage.getItem('currentUser') === null ||
@@ -40,7 +41,7 @@ function Navbar() {
         })
     }, [])
 
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({
+    const {getRootProps, getInputProps} = useDropzone({
         accept: {
             'image/jpeg': [],
         },
@@ -63,16 +64,30 @@ function Navbar() {
                     <CloseIcon onClick={() => setShowDragAndDrop(!showDragAndDrop)}/>
                 </div>
             </DragAndDropWrapper> : ''}
-        {showPostDetails && image !== null ? <UploadPost image={image} alt={''}/>
-            : ''}
-        <div className={'container'}>
-            <h1 className={'name'}>Menu</h1>
-            <div className={'icons-container'}>
-                <AddCircleRoundedIcon className={'add-photo-icon'}
-                                      onClick={() => setShowDragAndDrop(!showDragAndDrop)}/>
-                <MoreVertOutlinedIcon className={'settings-icon'}/>
+        {showPostDetails && image !== null ? <UploadPost image={image} alt={''}/> : ''}
+        <div className={'lol'}>
+            <div className={'container'}>
+                <h1 className={'name'}>Menu</h1>
+                <div className={'icons-container'}>
+                    <AddCircleRoundedIcon className={'add-photo-icon'}
+                                          onClick={() => setShowDragAndDrop(!showDragAndDrop)}/>
+                    <MoreVertOutlinedIcon className={'settings-icon'}
+                                          onClick={() => setShowMenuPopup(!showMenuPopup)}/>
+                </div>
             </div>
+
         </div>
+        {showMenuPopup ? <MenuPopup>
+            <div className={'popup-window'}>
+                <div className={'close-icon'}>
+                    <CloseIcon  onClick={() => setShowMenuPopup(!showMenuPopup)}/>
+                </div>
+                {<ul>
+                    <li>Logout</li>
+                    <li>Delete an account</li>
+                </ul>}
+            </div>
+        </MenuPopup> : ''}
 
     </Wrapper>
 
