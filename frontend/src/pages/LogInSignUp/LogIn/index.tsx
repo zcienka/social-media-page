@@ -2,10 +2,9 @@ import {Wrapper} from '../LogInSignUp.styles'
 import React, {useEffect, useState} from 'react'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import {Link, useNavigate} from 'react-router-dom'
-import {authenticateUser, Token} from '../../../features/authSlice'
+import {authenticateUser} from '../../../features/authSlice'
 import LinearProgress from '@mui/material/LinearProgress'
 import ErrorIcon from '@mui/icons-material/Error'
-import jwtDecode from "jwt-decode";
 
 export interface Credentials {
     username: string,
@@ -19,17 +18,10 @@ const initialState = {
     posts_liked: [],
 }
 
-export interface JWTToken {
-    token_type: string,
-    exp: number,
-    iat: number,
-    jti: string,
-    user_id: number,
-}
 
 function LogIn() {
     const [userInfo, setUserInfo] = useState<Credentials>(initialState)
-    const token = useAppSelector(state => state.auth)
+    const authUser = useAppSelector(state => state.auth)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -42,23 +34,15 @@ function LogIn() {
     }
 
     useEffect(() => {
-        if (token.loading === 'succeeded') {
-            const currentUser: Token = JSON.parse(localStorage.getItem('profile') || '{}')
-            const jwtToken: JWTToken = jwtDecode(currentUser.refresh)
-
-            const user = {
-                username: userInfo.username,
-                userId: jwtToken.user_id,
-            }
-            localStorage.setItem('currentUser', JSON.stringify(user))
+        if (authUser.loading === 'succeeded') {
             navigate('/', {replace: false})
         }
-    }, [userInfo.username, navigate, token])
+    }, [navigate, authUser])
 
     return <Wrapper>
         <div className={'container'}>
             <div className='buffering-container'>
-                {token.loading === 'pending' ?
+                {authUser.loading === 'pending' ?
                     <LinearProgress className={'buffering'}/> :
                     <LinearProgress className={'hidden'}/>}
             </div>
@@ -77,7 +61,7 @@ function LogIn() {
                         return {...info, password: e.target.value}
                     })
                 }}/>
-                {token.loading === 'failed' ?
+                {authUser.loading === 'failed' ?
                     <p className={'invalid-credentials'}>
                         <span><ErrorIcon/></span>Invalid username or password
                     </p> : ''

@@ -4,12 +4,9 @@ import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import LinearProgress from '@mui/material/LinearProgress'
 import {Link, useNavigate} from 'react-router-dom'
 import {registerUser} from '../../../features/registerSlice'
-import jwtDecode from "jwt-decode"
-import {JWTToken} from "../LogIn"
-import {authenticateUser, Token} from "../../../features/authSlice"
-import ErrorIcon from "@mui/icons-material/Error";
-import {FormatAlignLeftSharp} from "@mui/icons-material";
-import {getUserInfo} from "../../../features/userSlice";
+import {authenticateUser} from '../../../features/authSlice'
+import ErrorIcon from '@mui/icons-material/Error'
+import {getUserInfo} from '../../../features/userSlice'
 
 export interface credentials {
     username: string,
@@ -30,7 +27,7 @@ function SignUp() {
     const [usernameAlreadyExists, setUsernameAlreadyExists] = useState(false)
     const register = useAppSelector(state => state.register)
     const user = useAppSelector(state => state.user)
-    const authentication = useAppSelector(state => state.auth)
+    const authUser = useAppSelector(state => state.auth)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -54,20 +51,10 @@ function SignUp() {
     }, [userInfo, dispatch, register.loading])
 
     useEffect(() => {
-        if (authentication.loading === 'succeeded') {
-            const profile: Token = JSON.parse(localStorage.getItem('profile') || '{}')
-            const jwtToken: JWTToken = jwtDecode(profile.refresh)
-
-            const user = {
-                username: userInfo.username,
-                userId: jwtToken.user_id,
-            }
-
-            localStorage.setItem('currentUser', JSON.stringify(user))
+        if (authUser.loading === 'succeeded') {
             navigate('/', {replace: false})
-
         }
-    }, [userInfo.username, authentication, navigate])
+    }, [userInfo.username, authUser, navigate])
 
 
     useEffect(() => {
@@ -121,7 +108,7 @@ function SignUp() {
                     <span><ErrorIcon/></span>Username already exists
                 </p> : ''}
                 <div className={'button-container'}>
-                    <p className={'log-in-message'}>Already have an account?<span><Link
+                    <p className={'log-in-message'}>Already have an account? <span><Link
                         to={'/login'}>Log in</Link></span></p>
                     <button className={'confirm-button'} onClick={(e) => signUp()}>Sign up</button>
                 </div>

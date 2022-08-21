@@ -48,6 +48,13 @@ export const deleteUser = createAsyncThunk(
     }
 )
 
+export const logoutUser = createAsyncThunk(
+    'user/logoutUser',
+    async (username: string) => {
+        await axios.delete(`http://127.0.0.1:8000/api/user/${username}/logout`)
+    }
+)
+
 export const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -88,7 +95,6 @@ export const userSlice = createSlice({
         })
         builder.addCase(deleteUser.fulfilled, (state, action) => {
             state = initialState
-            localStorage.removeItem('currentUser')
             localStorage.removeItem('profile')
             state.loading = 'succeeded'
         })

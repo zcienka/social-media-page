@@ -3,6 +3,8 @@ from .serializers import UsersSerializer, UserSerializerBasic,UserExistsSerializ
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 class UserListCreateAPIView(generics.ListCreateAPIView):
@@ -47,3 +49,13 @@ class UserExistAPIView(generics.ListAPIView):
 
 user_exists_view = UserExistAPIView.as_view()
 
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username
+
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

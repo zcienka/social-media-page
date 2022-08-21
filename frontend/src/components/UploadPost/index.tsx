@@ -1,7 +1,7 @@
 import {Wrapper} from './UploadPost.styles'
 import React, {useState, useEffect} from 'react'
 import {addPost, PostList} from '../../features/postsSlice'
-import {useAppDispatch} from '../../app/hooks'
+import {useAppDispatch, useAppSelector} from '../../app/hooks'
 import CloseIcon from '@mui/icons-material/Close'
 import {useNavigate} from "react-router-dom"
 
@@ -32,6 +32,7 @@ function UploadPost(file: Props) {
     const [showPopup, setShowPopup] = useState(true)
     const [post, setPost] = useState<PostList>(initialState)
     const navigate = useNavigate()
+    const authUser = useAppSelector(state => state.auth)
 
     const publishPost = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
@@ -58,18 +59,17 @@ function UploadPost(file: Props) {
     }
 
     useEffect(() => {
-        if (localStorage.getItem('currentUser') === null) {
+        if (authUser.username === null || authUser.user_id === null) {
             navigate('/login', {replace: false})
         } else {
-            const currentUser: UserDetails = JSON.parse(localStorage.getItem('currentUser') || '{}')
             setPost((post: PostList) => {
-                return {...post, username: currentUser.username}
+                return {...post, username: authUser.username}
             })
             setPost((post: PostList) => {
                 return {...post, image: file.image}
             })
         }
-    }, [file.image, navigate])
+    }, [authUser.user_id, authUser.username, file.image, navigate])
 
 
     return showPopup ? <Wrapper>

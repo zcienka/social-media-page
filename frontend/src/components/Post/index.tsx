@@ -8,11 +8,7 @@ import {useNavigate} from 'react-router-dom';
 import {addComment, CommentSend, getCommentsByPostId} from '../../features/commentSlice'
 import {Comment} from '../../features/commentSlice'
 import DeleteIcon from '@mui/icons-material/Delete'
-
-interface userDetails {
-    username: string,
-    userId: number,
-}
+import {PersistProfile, UserAuth} from "../../interfaces/profileLocalStorage.interface";
 
 const commentInitialState = {
     username: null,
@@ -21,12 +17,12 @@ const commentInitialState = {
 }
 
 function Post(props: PostList) {
-    const userInfo: userDetails = JSON.parse(localStorage.getItem('currentUser') || '{}')
-    const [isPostLiked, setIsPostLiked] = useState(props.users_like.includes(userInfo.userId))
+    const [isPostLiked, setIsPostLiked] = useState(false)
     const [showDeletePostPopup, setShowDeletePostPopup] = useState(false)
     const [showFullPost, setShowFullPost] = useState(false)
     const dateAdded = moment(props.date).fromNow()
     const [post, setPost] = useState<PostList>(props)
+    const [user, setUser] = useState<UserAuth | null>(null)
     const [comment, setComment] = useState<CommentSend>(commentInitialState)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
@@ -37,30 +33,44 @@ function Post(props: PostList) {
     }, [props.id, dispatch])
 
     useEffect(() => {
-        setComment((prevState) => {
-            return {...prevState, username: userInfo.username}
-        })
-        setComment((prevState) => {
-            return {...prevState, post: props.id}
-        })
-    }, [props.id, userInfo.username])
+        if (localStorage.getItem("persist:profile") !== null) {
+            const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
+            setUser(() => profile.auth)
+            setComment((prevState) => {
+                return {...prevState, username: profile.auth.username}
+            })
+            setComment((prevState) => {
+                return {...prevState, post: props.id}
+            })
+        }
+    }, [props.id])
+
+    useEffect(() => {
+        if (user !== null && typeof user.user_id === "number") {
+            setIsPostLiked(props.users_like.includes(user.user_id))
+        }
+    }, [user, props.users_like])
 
     const likePost = () => {
-        setPost((prevPost: PostList) => {
-            return {...prevPost, users_like: [...prevPost.users_like, userInfo.userId]}
-        })
+        if (user !== null) {
+            setPost((prevPost: PostList) => {
+                return {...prevPost, users_like: [...prevPost.users_like, user.user_id as number]}
+            })
+        }
     }
 
     const dislikePost = () => {
-        setPost((prevPost: PostList) => {
-            return {...prevPost, users_like: [...prevPost.users_like.filter((id) => id !== userInfo.userId)]}
-        })
+        if (user !== null) {
+            setPost((prevPost: PostList) => {
+                return {...prevPost, users_like: [...prevPost.users_like.filter((id) => id !== user.user_id)]}
+            })
+        }
     }
 
     const postComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
 
-        if (comment?.description !== null) {
+        if (comment.description !== null) {
             dispatch(addComment(comment))
         }
     }
@@ -74,7 +84,6 @@ function Post(props: PostList) {
             navigate(`/post/${post.id}`, {replace: false})
         }
     }, [post.id, navigate, showFullPost])
-
 
     return <Wrapper>
         {showDeletePostPopup ? <DeletePostPopup>
@@ -112,7 +121,7 @@ function Post(props: PostList) {
                     {isPostLiked ? <FavoriteIcon className={'heart-icon red'} onClick={() => dislikePost()}/> :
                         <FavoriteIcon className={'heart-icon grey'} onClick={() => likePost()}/>}
                 </div>
-                {props.username === userInfo.username ? <DeleteIcon className={'trash-icon'} onClick={() =>
+                {user !== null && props.username === user.username ? <DeleteIcon className={'trash-icon'} onClick={() =>
                     setShowDeletePostPopup((showPopup: boolean) => !showPopup)}/> : ''}
             </div>
             <div className={'header'}>

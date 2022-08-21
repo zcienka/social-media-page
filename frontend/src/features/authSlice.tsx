@@ -2,21 +2,23 @@ import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
 import React from 'react'
 import {Credentials} from '../pages/LogInSignUp/LogIn'
-
-export interface Token {
-    refresh: string,
-    access: string,
-}
-
-interface TokenState {
-    entities: Token[]
-    loading: 'idle' | 'pending' | 'succeeded' | 'failed'
-}
+import jwtDecode from 'jwt-decode'
+import {UserAuth} from "../interfaces/profileLocalStorage.interface"
 
 const initialState = {
-    entities: [],
+    username: null,
+    user_id: null,
     loading: 'idle',
-} as TokenState
+} as UserAuth
+
+export interface JWTToken {
+    token_type: string,
+    exp: number,
+    iat: number,
+    jti: string,
+    user_id: number,
+    username: string,
+}
 
 export const authenticateUser = createAsyncThunk(
     'authenticate/authenticateUser',
@@ -29,14 +31,27 @@ export const authenticateUser = createAsyncThunk(
 export const authSlice = createSlice({
     name: 'authenticate',
     initialState,
-    reducers: {},
+    reducers: {
+        getUser(state) {
+            const localStorageProfile = localStorage.getItem('profile')
+
+            if(localStorageProfile !== null) {
+                const jwtToken: JWTToken = jwtDecode(localStorageProfile)
+                state.username = jwtToken.username
+                state.user_id = jwtToken.user_id
+            }
+        }
+    },
+    // middleware: [authMiddleware],
     extraReducers: builder => {
         builder.addCase(authenticateUser.pending, (state) => {
             state.loading = 'pending'
         })
         builder.addCase(authenticateUser.fulfilled, (state, action) => {
-            state.entities = action.payload
-            localStorage.setItem('profile', JSON.stringify({...action.payload}))
+            const jwtToken: JWTToken = jwtDecode(action.payload.access)
+            state.username = jwtToken.username
+            state.user_id = jwtToken.user_id
+
             state.loading = 'succeeded'
         })
         builder.addCase(authenticateUser.rejected, (state) => {
@@ -46,3 +61,5 @@ export const authSlice = createSlice({
 })
 
 export default authSlice.reducer
+
+export const {getUser} = authSlice.actions

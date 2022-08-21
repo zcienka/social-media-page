@@ -1,6 +1,7 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
 
+
 export interface PostList {
     caption: string | null,
     comments: string[],

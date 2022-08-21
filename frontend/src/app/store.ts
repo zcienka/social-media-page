@@ -1,21 +1,37 @@
-import {configureStore} from '@reduxjs/toolkit'
-import postsReducer from "../features/postsSlice"
-import authReducer from "../features/authSlice"
-import registerReducer from "../features/registerSlice"
-import userReducer from "../features/userSlice"
-import commentReducer from "../features/commentSlice"
+import { configureStore } from '@reduxjs/toolkit'
+import {
+    persistReducer,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+} from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
-export const store = configureStore({
-    reducer: {
-        posts: postsReducer,
-        auth: authReducer,
-        register: registerReducer,
-        user: userReducer,
-        // singlePost: singlePostReducer,
-        comment: commentReducer,
-    }
+import rootReducer from './reducers'
+
+const persistConfig = {
+    key: 'profile',
+    version: 1,
+    storage,
+    whitelist: ['auth']
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
+        }),
 })
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
+
 export default store

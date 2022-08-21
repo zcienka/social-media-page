@@ -10,7 +10,8 @@ import UploadPost from '../UploadPost'
 import {useNavigate} from 'react-router-dom'
 import {useAppDispatch} from '../../app/hooks'
 import {deleteUser} from '../../features/userSlice'
-import {UserDetails} from '../UploadPost'
+import {getUser} from "../../features/authSlice"
+import {PersistProfile} from "../../interfaces/profileLocalStorage.interface";
 
 function Navbar() {
     const navigate = useNavigate()
@@ -21,13 +22,19 @@ function Navbar() {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        if ((localStorage.getItem('currentUser') === null ||
-            localStorage.getItem('profile') === null)) {
-            setIsUserLoggedIn(() => false)
-        } else {
-            setIsUserLoggedIn(() => true)
-            const user: UserDetails = JSON.parse(localStorage.getItem('currentUser') || '{}')
-            setUsername(user.username)
+        dispatch(getUser)
+    }, [dispatch])
+
+    useEffect(() => {
+        if (localStorage.getItem("persist:profile") !== null) {
+            const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
+            if ((profile.auth.username === null ||
+                profile.auth.user_id === null)) {
+                setIsUserLoggedIn(() => false)
+            } else {
+                setIsUserLoggedIn(() => true)
+                setUsername(profile.auth.username)
+            }
         }
     }, [])
 
@@ -64,6 +71,17 @@ function Navbar() {
         onDrop
     })
 
+    const deleteAnAccount = () => {
+        if (username !== null) {
+            dispatch(deleteUser(username))
+            setIsUserLoggedIn(() => false)
+            setShowMenuPopup(() => false)
+        }
+    }
+    const logOut = () => {
+
+    }
+
     return <Wrapper>
         {showDragAndDrop ?
             <DragAndDropWrapper>
@@ -80,26 +98,23 @@ function Navbar() {
                 </div>
             </DragAndDropWrapper> : ''}
         {showPostDetails && image !== null ? <UploadPost image={image} alt={''}/> : ''}
-        <div className={'lol'}>
-            <div className={'container'}>
-                <h1 className={'name'}>Menu</h1>
-                <div className={'icons-container'}>
-                    <AddCircleRoundedIcon className={'add-photo-icon'}
-                                          onClick={() => setShowDragAndDrop(!showDragAndDrop)}/>
-                    {isUserLoggedIn ? <MoreVertOutlinedIcon className={'settings-icon'}
-                                                            onClick={() => setShowMenuPopup(!showMenuPopup)}/> : ''}
-                </div>
+        <div className={'container'}>
+            <h1 className={'name'}>Menu</h1>
+            <div className={'icons-container'}>
+                <AddCircleRoundedIcon className={'add-photo-icon'}
+                                      onClick={() => setShowDragAndDrop(!showDragAndDrop)}/>
+                {isUserLoggedIn ? <MoreVertOutlinedIcon className={'settings-icon'}
+                                                        onClick={() => setShowMenuPopup(!showMenuPopup)}/> : ''}
             </div>
-
         </div>
-        {showMenuPopup && username !== null ? <MenuPopup>
+        {showMenuPopup ? <MenuPopup>
             <div className={'popup-window'}>
                 <div className={'close-icon'}>
                     <CloseIcon onClick={() => setShowMenuPopup(!showMenuPopup)}/>
                 </div>
                 {<ul>
-                    <li>Logout</li>
-                    <li onClick={() => dispatch(deleteUser(username))}>Delete an account</li>
+                    <li onClick={() => logOut()}>Logout</li>
+                    <li onClick={() => deleteAnAccount()}>Delete an account</li>
                 </ul>}
             </div>
         </MenuPopup> : ''}
