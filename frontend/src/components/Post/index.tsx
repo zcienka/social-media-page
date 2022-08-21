@@ -35,15 +35,18 @@ function Post(props: PostList) {
     useEffect(() => {
         if (localStorage.getItem("persist:profile") !== null) {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
-            setUser(() => profile.auth)
+            const userProfile: UserAuth = JSON.parse(profile.auth)
+
+            setUser(() => userProfile)
             setComment((prevState) => {
-                return {...prevState, username: profile.auth.username}
+                return {...prevState, username: userProfile.username}
             })
             setComment((prevState) => {
                 return {...prevState, post: props.id}
             })
         }
     }, [props.id])
+
 
     useEffect(() => {
         if (user !== null && typeof user.user_id === "number") {

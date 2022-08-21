@@ -5,6 +5,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import {authenticateUser} from '../../../features/authSlice'
 import LinearProgress from '@mui/material/LinearProgress'
 import ErrorIcon from '@mui/icons-material/Error'
+import {PersistProfile, UserAuth} from "../../../interfaces/profileLocalStorage.interface";
 
 export interface Credentials {
     username: string,
@@ -34,8 +35,13 @@ function LogIn() {
     }
 
     useEffect(() => {
-        if (authUser.loading === 'succeeded') {
-            navigate('/', {replace: false})
+        if (authUser.loading === 'succeeded' || localStorage.getItem("persist:profile") !== null) {
+            const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
+            const userProfile: UserAuth = JSON.parse(profile.auth)
+
+            if(userProfile.username !== null) {
+                navigate('/', {replace: false})
+            }
         }
     }, [navigate, authUser])
 

@@ -10,6 +10,6 @@ interface Persist {
 }
 
 export interface PersistProfile {
-    auth: UserAuth,
-    _persist: Persist,
+    auth: string,
+    _persist: string,
 }

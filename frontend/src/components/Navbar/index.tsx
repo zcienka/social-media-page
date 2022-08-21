@@ -8,10 +8,10 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import CloseIcon from '@mui/icons-material/Close'
 import UploadPost from '../UploadPost'
 import {useNavigate} from 'react-router-dom'
-import {useAppDispatch} from '../../app/hooks'
+import {useAppDispatch, useAppSelector} from '../../app/hooks'
 import {deleteUser} from '../../features/userSlice'
-import {getUser} from "../../features/authSlice"
-import {PersistProfile} from "../../interfaces/profileLocalStorage.interface";
+import {PersistProfile, UserAuth} from '../../interfaces/profileLocalStorage.interface'
+import {logOut} from "../../features/authSlice";
 
 function Navbar() {
     const navigate = useNavigate()
@@ -20,23 +20,28 @@ function Navbar() {
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
     const [username, setUsername] = useState<string | null>(null)
     const dispatch = useAppDispatch()
+    const authUser = useAppSelector(state => state.auth)
 
     useEffect(() => {
-        dispatch(getUser)
-    }, [dispatch])
-
-    useEffect(() => {
-        if (localStorage.getItem("persist:profile") !== null) {
+        if (localStorage.getItem('persist:profile') === null) {
+            setIsUserLoggedIn(() => false)
+        } else {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
-            if ((profile.auth.username === null ||
-                profile.auth.user_id === null)) {
-                setIsUserLoggedIn(() => false)
-            } else {
+            const userProfile: UserAuth = JSON.parse(profile.auth)
+            if (userProfile.username !== null) {
                 setIsUserLoggedIn(() => true)
-                setUsername(profile.auth.username)
+                setUsername(userProfile.username)
+            } else {
+                setIsUserLoggedIn(() => false)
             }
         }
     }, [])
+
+    useEffect(() => {
+        if (authUser.username !== null) {
+            setIsUserLoggedIn(() => true)
+        }
+    }, [authUser])
 
     useEffect(() => {
         if (showDragAndDrop && !isUserLoggedIn) {
@@ -78,11 +83,13 @@ function Navbar() {
             setShowMenuPopup(() => false)
         }
     }
-    const logOut = () => {
-
+    const logOutTheUser = () => {
+        dispatch(logOut())
+        setIsUserLoggedIn(() => false)
+        setShowMenuPopup(() => false)
     }
 
-    return <Wrapper>
+        return <Wrapper>
         {showDragAndDrop ?
             <DragAndDropWrapper>
                 <div className='popup-window'>
@@ -113,7 +120,7 @@ function Navbar() {
                     <CloseIcon onClick={() => setShowMenuPopup(!showMenuPopup)}/>
                 </div>
                 {<ul>
-                    <li onClick={() => logOut()}>Logout</li>
+                    <li onClick={() => logOutTheUser()}>Logout</li>
                     <li onClick={() => deleteAnAccount()}>Delete an account</li>
                 </ul>}
             </div>

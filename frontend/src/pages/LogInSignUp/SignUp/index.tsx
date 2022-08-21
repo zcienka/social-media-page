@@ -7,6 +7,7 @@ import {registerUser} from '../../../features/registerSlice'
 import {authenticateUser} from '../../../features/authSlice'
 import ErrorIcon from '@mui/icons-material/Error'
 import {getUserInfo} from '../../../features/userSlice'
+import {PersistProfile, UserAuth} from "../../../interfaces/profileLocalStorage.interface";
 
 export interface credentials {
     username: string,

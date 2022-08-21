@@ -12,10 +12,10 @@ const initialState = {
 } as UserAuth
 
 export interface JWTToken {
-    token_type: string,
     exp: number,
     iat: number,
     jti: string,
+    token_type: string,
     user_id: number,
     username: string,
 }
@@ -27,22 +27,14 @@ export const authenticateUser = createAsyncThunk(
             return data
     }
 )
-
+//&& localStorage.removeItem('persist:profile')
+//&& localStorage.removeItem('persist:profile')
 export const authSlice = createSlice({
     name: 'authenticate',
     initialState,
     reducers: {
-        getUser(state) {
-            const localStorageProfile = localStorage.getItem('profile')
-
-            if(localStorageProfile !== null) {
-                const jwtToken: JWTToken = jwtDecode(localStorageProfile)
-                state.username = jwtToken.username
-                state.user_id = jwtToken.user_id
-            }
-        }
+        logOut: () => initialState
     },
-    // middleware: [authMiddleware],
     extraReducers: builder => {
         builder.addCase(authenticateUser.pending, (state) => {
             state.loading = 'pending'
@@ -61,5 +53,4 @@ export const authSlice = createSlice({
 })
 
 export default authSlice.reducer
-
-export const {getUser} = authSlice.actions
+export const {logOut} = authSlice.actions
