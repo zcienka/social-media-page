@@ -3,7 +3,6 @@ import postsReducer from "../features/postsSlice"
 import authReducer from "../features/authSlice"
 import registerReducer from "../features/registerSlice"
 import userReducer from "../features/userSlice"
-import singlePostReducer from "../features/singlePostSlice"
 import commentReducer from "../features/commentSlice"
 
 export const store = configureStore({

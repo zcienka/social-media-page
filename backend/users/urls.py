@@ -9,7 +9,8 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', views.user_list_create_view, name='user_register'),
+    path('<slug:username>/', views.user_detail_update_view, name='user_detail'),
+    path('<slug:username>/delete', views.user_delete_view, name='user_delete'),
+    path('<slug:username>/exists', views.user_exists_view, name='user_exist'),
     path('', views.user_list_create_view, name='user_register'),
-    path('<slug:username>/', views.user_detail_update_delete_view, name='user_detail')
-    # path('login/', view., name='login'),
 ]

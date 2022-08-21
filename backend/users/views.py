@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions, authentication
-from .serializers import UsersSerializer, UserSerializerBasic
+from .serializers import UsersSerializer, UserSerializerBasic,UserExistsSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -19,10 +19,31 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 user_list_create_view = UserListCreateAPIView.as_view()
 
 
-class UserDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+class UserDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializerBasic
     lookup_field = 'username'
 
 
-user_detail_update_delete_view = UserDetailUpdateDeleteAPIView.as_view()
+user_detail_update_view = UserDetailUpdateAPIView.as_view()
+
+
+class UserDeleteAPIView(generics.DestroyAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializerBasic
+    lookup_field = 'username'
+
+
+user_delete_view = UserDeleteAPIView.as_view()
+
+
+class UserExistAPIView(generics.ListAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserExistsSerializer
+    lookup_field = 'username'
+
+    # def get_queryset(self, **kwargs):
+    #     return get_user_model().objects.filter(username=kwargs['slug']).exists()
+
+user_exists_view = UserExistAPIView.as_view()
+

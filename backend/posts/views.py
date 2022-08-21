@@ -81,10 +81,6 @@ class CommentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         user = get_user_model().objects.get(username=username)
         serializer.save(user=user)
 
-    # def destroy(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     self.perform_destroy(instance)
-    #     return Response(status=status.HTTP_200_OK)
 
 
 comment_detail_update_delete_view = CommentDetailAPIView.as_view()

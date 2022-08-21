@@ -159,7 +159,7 @@ export const MenuPopup = styled.div`
     }
     
     li {
-      padding: 0 8px;
+      padding: 4px 8px;
       cursor: pointer;
       
       :hover {

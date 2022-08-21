@@ -16,6 +16,9 @@ class Post(models.Model):
     def __str__(self):
         return self.caption[:100]
 
+    class Meta:
+        ordering = ('-date',)
+
 
 class Comment(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, null=False, editable=False)
@@ -27,3 +30,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.description[:100]
+
+    class Meta:
+        ordering = ('date',)

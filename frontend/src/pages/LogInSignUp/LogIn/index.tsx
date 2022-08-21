@@ -10,11 +10,13 @@ import jwtDecode from "jwt-decode";
 export interface Credentials {
     username: string,
     password: string,
+    posts_liked: string[],
 }
 
 const initialState = {
     username: '',
     password: '',
+    posts_liked: [],
 }
 
 export interface JWTToken {

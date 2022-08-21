@@ -1,15 +1,5 @@
-import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
-
-
-export interface Comment {
-    date: string | null,
-    id: string | null,
-    user: string | null,
-    username: string | null,
-    description: string | null,
-    post: string | null,
-}
 
 export interface PostList {
     caption: string | null,
@@ -60,7 +50,6 @@ export const addPost = createAsyncThunk(
             username: post.username,
             users_like: post.users_like,
         })
-        console.log({data})
         return data
     }
 )

@@ -5,7 +5,6 @@ import {credentials} from '../pages/LogInSignUp/SignUp'
 
 export interface User {
     username: string,
-    // password: string,
     posts_liked: string[],
 }
 
@@ -22,7 +21,6 @@ const initialState = {
 export const registerUser = createAsyncThunk(
     'register/registerUser',
     async (userInfo: credentials) => {
-        console.log({userInfo})
         const {data} = await axios.post('http://127.0.0.1:8000/api/user/register/', userInfo)
         return data
     }

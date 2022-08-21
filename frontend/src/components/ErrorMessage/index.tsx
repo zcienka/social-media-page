@@ -1,8 +1,8 @@
 import {Wrapper} from "./ErrorMessage.styles"
 
-function ErrorMessage() {
+function ErrorMessage(errorMessage: string) {
     return <div>
-        Error Message
+
     </div>
 }
 

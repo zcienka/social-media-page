@@ -1,30 +1,7 @@
-import {createSlice, PayloadAction, createAsyncThunk} from '@reduxjs/toolkit'
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
 import React from 'react'
-import {credentials} from '../pages/LogInSignUp/SignUp'
-import {updatePost} from "./postsSlice"
-
-// export interface PostsLiked {
-//     username: string,
-// }
-//
-// export interface User {
-//     id: number,
-//     posts_liked: PostsLiked[]
-//     slug: string,
-//     user: number,
-//     username: string,
-// }
-//    id: null,
-//     posts_liked: [],
-//     slug: null,
-//     username: null,
-export interface User {
-    id: number | null,
-    posts_liked: any[]
-    slug: string | null,
-    username: string | null,
-}
+import {PostList} from "./postsSlice";
 
 export interface UserState {
     id: number | null,
@@ -43,16 +20,15 @@ const initialState = {
 } as UserState
 
 export const getUserInfo = createAsyncThunk(
-    'getInfo/getUserInfo',
+    'user/getUserInfo',
     async (username: string) => {
         const {data} = await axios.get(`http://127.0.0.1:8000/api/user/${username}/`)
-        // console.log({data})
         return data
     }
 )
 
 export const updateUser = createAsyncThunk(
-    'getInfo/updateUser',
+    'user/updateUser',
     async (user: UserState) => {
         const {data} = await axios.post(`http://127.0.0.1:8000/api/user/${user.username}/`, {
             id: user.id,
@@ -65,8 +41,15 @@ export const updateUser = createAsyncThunk(
     }
 )
 
+export const deleteUser = createAsyncThunk(
+    'user/deleteUser',
+    async (username: string) => {
+        await axios.delete(`http://127.0.0.1:8000/api/user/${username}/delete`)
+    }
+)
+
 export const userSlice = createSlice({
-    name: 'getInfo',
+    name: 'user',
     initialState,
     reducers: {},
     extraReducers: builder => {
@@ -97,6 +80,19 @@ export const userSlice = createSlice({
             state.loading = 'succeeded'
         })
         builder.addCase(updateUser.rejected, (state) => {
+            state.loading = 'failed'
+        })
+
+        builder.addCase(deleteUser.pending, (state) => {
+            state.loading = 'pending'
+        })
+        builder.addCase(deleteUser.fulfilled, (state, action) => {
+            state = initialState
+            localStorage.removeItem('currentUser')
+            localStorage.removeItem('profile')
+            state.loading = 'succeeded'
+        })
+        builder.addCase(deleteUser.rejected, (state) => {
             state.loading = 'failed'
         })
     }

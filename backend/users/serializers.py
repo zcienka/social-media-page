@@ -25,3 +25,11 @@ class UserSerializerBasic(ModelSerializer):
             'id',
             'posts_liked',
         ]
+
+
+class UserExistsSerializer(ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            'username',
+        ]

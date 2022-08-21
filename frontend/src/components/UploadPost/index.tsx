@@ -22,7 +22,7 @@ export const initialState = {
     users_like: [],
 }
 
-interface UserDetails {
+export interface UserDetails {
     username: string,
     userId: string,
 }
