@@ -1,8 +1,7 @@
-import {Wrapper} from './UploadPost.styles'
+import {Wrapper} from './PublishPost.styles'
 import React, {useState, useEffect} from 'react'
 import {addPost, PostList} from '../../features/postsSlice'
 import {useAppDispatch, useAppSelector} from '../../app/hooks'
-import CloseIcon from '@mui/icons-material/Close'
 import {useNavigate} from "react-router-dom"
 
 interface Props {
@@ -22,12 +21,7 @@ export const initialState = {
     users_like: [],
 }
 
-export interface UserDetails {
-    username: string,
-    userId: string,
-}
-
-function UploadPost(file: Props) {
+function PublishPost(file: Props) {
     const dispatch = useAppDispatch()
     const [showPopup, setShowPopup] = useState(true)
     const [post, setPost] = useState<PostList>(initialState)
@@ -37,14 +31,20 @@ function UploadPost(file: Props) {
     const publishPost = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        if (post.caption !== null && post.image !== null && post.username !== null) {
+        if (post.caption !== null  && post.username !== null) {
             setPost((post: PostList) => {
                 return {...post, image: file.image}
             })
+            console.log({post})
             dispatch(addPost(post))
-            setShowPopup(!showPopup)
+            navigate('/', {replace: false})
         }
     }
+
+    useEffect(() => {
+        setShowPopup(true)
+        setPost(() => initialState)
+    }, [file])
 
     function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
         if (e.target.value === '') {
@@ -78,9 +78,6 @@ function UploadPost(file: Props) {
                 <img src={file.image} alt={''} className='image'/>
             </div>
             <div className='description-container'>
-                <div className={'close-icon'}>
-                    <CloseIcon onClick={() => setShowPopup(!showPopup)}/>
-                </div>
 
                 <p className={'post-description'}>Add description to your post</p>
                 <textarea onChange={(e) => handleChange(e)}/>
@@ -92,4 +89,4 @@ function UploadPost(file: Props) {
     </Wrapper> : <></>
 }
 
-export default UploadPost
+export default PublishPost

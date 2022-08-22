@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 import base64
 import uuid
-
+import os
 
 class PostListCreateAPIView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
@@ -38,6 +38,15 @@ class PostDetailUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         username = serializer.validated_data.get('username')
         user = get_user_model().objects.get(username=username)
         serializer.save(user=user)
+
+    def destroy(self, request, **kwargs):
+        instance = self.get_object()
+        image = getattr(instance, "image")
+
+        if os.path.exists("." + image):
+            os.remove("." + image)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 post_detail_update_delete_view = PostDetailUpdateDestroyAPIView.as_view()

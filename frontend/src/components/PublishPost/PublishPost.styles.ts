@@ -2,20 +2,20 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   align-items: center;
-  background: linear-gradient(rgba(0, 0, 0, 0.7),
-  rgba(0, 0, 0, 0.7));
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 64px);
   justify-content: center;
-  position: fixed;
-  width: 100vw;
-
+  width: 100%;
+  background-color: white;
+  z-index: 1000;
+  position: absolute;
+  
   .popup-window {
-    background-color: #FAF9F6;
     border-radius: 16px;
     display: flex;
     height: 720px;
     width: 1000px;
+    border: 1px solid #D9D9D9;
   }
 
   .image-container {
@@ -35,15 +35,8 @@ export const Wrapper = styled.div`
     width: 50%;
     display: flex;
     flex-direction: column;
-    
-    .close-icon {
-      display: flex;
-      justify-content: right;
-      cursor: pointer;
-    }
 
     textarea {
-      background-color: #FAF9F6;
       border-radius: 16px;
       border: 1px solid #D9D9D9;
       font-family: inherit;

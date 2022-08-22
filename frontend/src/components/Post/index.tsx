@@ -1,6 +1,6 @@
 import {Wrapper, Photo, DeletePostPopup} from './Post.styles'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {PostList, updatePost, deletePost} from '../../features/postsSlice'
 import moment from 'moment'
 import {useAppDispatch, useAppSelector} from '../../app/hooks'
@@ -19,7 +19,6 @@ const commentInitialState = {
 function Post(props: PostList) {
     const [isPostLiked, setIsPostLiked] = useState(false)
     const [showDeletePostPopup, setShowDeletePostPopup] = useState(false)
-    const [showFullPost, setShowFullPost] = useState(false)
     const dateAdded = moment(props.date).fromNow()
     const [post, setPost] = useState<PostList>(props)
     const [user, setUser] = useState<UserAuth | null>(null)
@@ -27,6 +26,7 @@ function Post(props: PostList) {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const comments = useAppSelector(state => state.comment)
+    const inputRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
         dispatch(getCommentsByPostId(props.id))
@@ -56,37 +56,51 @@ function Post(props: PostList) {
 
     const likePost = () => {
         if (user !== null) {
-            setPost((prevPost: PostList) => {
-                return {...prevPost, users_like: [...prevPost.users_like, user.user_id as number]}
-            })
+            if (user.username !== null) {
+                setPost((prevPost: PostList) => {
+                    return {...prevPost, users_like: [...prevPost.users_like, user.user_id as number]}
+                })
+            } else {
+                navigate('/login', {replace: false})
+            }
         }
     }
 
     const dislikePost = () => {
         if (user !== null) {
-            setPost((prevPost: PostList) => {
-                return {...prevPost, users_like: [...prevPost.users_like.filter((id) => id !== user.user_id)]}
-            })
+            if (user.username !== null) {
+                setPost((prevPost: PostList) => {
+                    return {...prevPost, users_like: [...prevPost.users_like.filter((id) => id !== user.user_id)]}
+                })
+            } else {
+                navigate('/login', {replace: false})
+            }
         }
     }
 
     const postComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-
         if (comment.description !== null) {
             dispatch(addComment(comment))
+            setComment((prevState) => {
+                return {...prevState, description: null}
+            })
+            if (inputRef.current !== null) {
+                inputRef.current.value = ""
+            }
         }
     }
+
+    const deleteCurrentPost = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
+        dispatch(deletePost(post.id))
+        setShowDeletePostPopup((showPopup: boolean) => !showPopup)
+    }
+
 
     useEffect(() => {
         dispatch(updatePost(post))
     }, [post, dispatch])
-
-    useEffect(() => {
-        if (showFullPost) {
-            navigate(`/post/${post.id}`, {replace: false})
-        }
-    }, [post.id, navigate, showFullPost])
 
     return <Wrapper>
         {showDeletePostPopup ? <DeletePostPopup>
@@ -94,7 +108,7 @@ function Post(props: PostList) {
                 <p>Do you really want do delete this post?</p>
                 <div className='buttons'>
                     <div className={'delete-btn'}>
-                        <button onClick={() => dispatch(deletePost(post.id))}>Delete</button>
+                        <button onClick={(e) => deleteCurrentPost(e)}>Delete</button>
                     </div>
                     <div className={'cancel-btn'}>
                         <button onClick={() => setShowDeletePostPopup((showPopup: boolean) => !showPopup)}>
@@ -107,8 +121,7 @@ function Post(props: PostList) {
         <div className={'container'}>
             <Photo>
                 {props.image ?
-                    <img src={'http://127.0.0.1:8000' + props.image} alt={''}
-                         onClick={() => setShowFullPost((showFullPost: boolean) => !showFullPost)}/> : ''}
+                    <img src={'http://127.0.0.1:8000' + props.image} alt={''}/> : ''}
             </Photo>
 
             <div className={'post-info-container'}>
@@ -130,7 +143,7 @@ function Post(props: PostList) {
             <div className={'header'}>
                 <p>Comments</p>
             </div>
-            <div className='comments'>
+            <div className='comments-show-recent'>
                 {comments.results.map((comment: Comment) => {
                     if (comment.post === props.id) {
                         return <div className={'single-comment'} key={comment.id}>
@@ -140,13 +153,13 @@ function Post(props: PostList) {
                     }
                 })}
             </div>
-            <div className='comment-input'>
-                <input placeholder={'Write a comment'} onChange={(e) =>
+            {user !== null && user.username !== null ? <div className='comment-input'>
+                <input placeholder={'Write a comment'} ref={inputRef} onChange={(e) =>
                     setComment((prevState) => {
                         return {...prevState, description: e.target.value}
                     })}/>
                 <button onClick={(e) => postComment(e)}>Post</button>
-            </div>
+            </div> : ''}
         </div>
     </Wrapper>
 }

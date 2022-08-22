@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions, authentication
-from .serializers import UsersSerializer, UserSerializerBasic,UserExistsSerializer
+from .serializers import UsersSerializer, UserSerializerBasic, UserExistsSerializer
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -44,10 +44,9 @@ class UserExistAPIView(generics.ListAPIView):
     serializer_class = UserExistsSerializer
     lookup_field = 'username'
 
-    # def get_queryset(self, **kwargs):
-    #     return get_user_model().objects.filter(username=kwargs['slug']).exists()
 
 user_exists_view = UserExistAPIView.as_view()
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -56,6 +55,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
 
         return token
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer

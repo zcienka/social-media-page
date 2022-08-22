@@ -5,7 +5,6 @@ export const Wrapper = styled.div`
   border-radius: 16px;
   font-family: 'Roboto', sans-serif;
   margin: 16px 8px 8px 8px;
-  padding-top: 16px;
 
   @media screen and (min-width: 700px) {
     margin: 0 24px;
@@ -114,7 +113,7 @@ export const Wrapper = styled.div`
     }
   }
 
-  .comments {
+  .comments-show-recent {
     display: inline-block;
     max-height: 140px;
     min-height: 16px;
@@ -122,26 +121,26 @@ export const Wrapper = styled.div`
     overflow: hidden !important;
     width: 100%;
     padding-left: 16px;
+  }
 
-    .username {
-      font-weight: bold;
+  .username {
+    font-weight: bold;
+  }
+
+  .single-comment {
+    display: flex;
+    flex-direction: row;
+    padding-top: 8px;
+
+    .description {
+      margin-left: 8px;
+      color: #5D5E5E;
     }
+  }
 
-    .single-comment {
-      display: flex;
-      flex-direction: row;
-      padding-top: 8px;
-
-      .description {
-        margin-left: 8px;
-        color: #5D5E5E;
-      }
-    }
-
-    label {
-      font-size: 20px;
-      color: #343434;
-    }
+  label {
+    font-size: 20px;
+    color: #343434;
   }
 
   .comment-input {
@@ -208,7 +207,7 @@ export const DeletePostPopup = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  
+
   p {
     color: #343434;
     font-weight: bold;

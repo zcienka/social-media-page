@@ -130,6 +130,7 @@ export const postsSlice = createSlice({
             state.loading = 'pending'
         })
         builder.addCase(getPost.fulfilled, (state, action) => {
+            state.results = []
             state.results.push(action.payload)
             state.results = Array.from(new Map(state.results.map((x) => [x['id'], x])).values())
             state.loading = 'succeeded'

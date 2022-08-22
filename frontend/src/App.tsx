@@ -4,7 +4,8 @@ import {Route, BrowserRouter, Routes} from 'react-router-dom'
 import HomePage from "./pages/HomePage"
 import LogIn from "./pages/LogInSignUp/LogIn"
 import SignUp from "./pages/LogInSignUp/SignUp"
-import FullPost from "./components/FullPost"
+import DragAndDrop from "./components/DragAndDrop";
+import PublishPost from "./components/PublishPost";
 
 function App() {
     return (<BrowserRouter basename={process.env.PUBLIC_URL}>
@@ -13,7 +14,7 @@ function App() {
                 <Route path={"/"} element={<HomePage/>}/>
                 <Route path={"/signup"} element={<SignUp/>}/>
                 <Route path={"/login"} element={<LogIn/>}/>
-                <Route path={"/post/:id"} element={<FullPost/>}/>
+                <Route path={"/upload_photo"} element={<DragAndDrop/>}/>
             </Routes>
         </BrowserRouter>
     )
