@@ -52,7 +52,8 @@ function SignUp() {
     }, [userInfo, register.loading, dispatch])
 
     useEffect(() => {
-        if (authUser.loading === 'succeeded') {
+        if (authUser.loading === 'succeeded' && userInfo.password !== initialState.password &&
+            userInfo.username !== initialState.username && !usernameAlreadyExists) {
             navigate('/', {replace: true})
         }
     }, [navigate, authUser.loading, dispatch])

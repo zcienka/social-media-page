@@ -5,7 +5,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import {authenticateUser, JWTToken} from '../../../features/authSlice'
 import LinearProgress from '@mui/material/LinearProgress'
 import ErrorIcon from '@mui/icons-material/Error'
-import {PersistProfile, TokenAuth} from "../../../interfaces/profileLocalStorage.interface";
+import {PersistProfile, TokenAuth} from "../../../interfaces/profileLocalStorage.interface"
 import jwtDecode from "jwt-decode";
 
 export interface Credentials {
@@ -39,7 +39,6 @@ function LogIn() {
         if (authUser.loading === 'succeeded' || localStorage.getItem("persist:profile") !== null) {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
             const token: TokenAuth = JSON.parse(profile.auth)
-
             if (token.access !== null) {
                 const accessToken: JWTToken = jwtDecode(token.access)
                 if (accessToken.username !== null) {
@@ -71,7 +70,7 @@ function LogIn() {
                         return {...info, password: e.target.value}
                     })
                 }}/>
-                {authUser.loading === 'failed' ?
+                {authUser.loading === 'failed' && userInfo.username !== '' && userInfo.password !== '' ?
                     <p className={'invalid-credentials'}>
                         <span><ErrorIcon/></span>Invalid username or password
                     </p> : ''

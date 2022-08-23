@@ -1,7 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import axios from 'axios'
 import React from 'react'
-import {PostList} from "./postsSlice";
 
 export interface UserState {
     id: number | null,
@@ -44,14 +43,8 @@ export const updateUser = createAsyncThunk(
 export const deleteUser = createAsyncThunk(
     'user/deleteUser',
     async (username: string) => {
+        localStorage.removeItem('persist:auth')
         await axios.delete(`http://127.0.0.1:8000/api/user/${username}/delete`)
-    }
-)
-
-export const logoutUser = createAsyncThunk(
-    'user/logoutUser',
-    async (username: string) => {
-        await axios.delete(`http://127.0.0.1:8000/api/user/${username}/logout`)
     }
 )
 
@@ -87,18 +80,6 @@ export const userSlice = createSlice({
             state.loading = 'succeeded'
         })
         builder.addCase(updateUser.rejected, (state) => {
-            state.loading = 'failed'
-        })
-
-        builder.addCase(deleteUser.pending, (state) => {
-            state.loading = 'pending'
-        })
-        builder.addCase(deleteUser.fulfilled, (state, action) => {
-            state = initialState
-            localStorage.removeItem('profile')
-            state.loading = 'succeeded'
-        })
-        builder.addCase(deleteUser.rejected, (state) => {
             state.loading = 'failed'
         })
     }

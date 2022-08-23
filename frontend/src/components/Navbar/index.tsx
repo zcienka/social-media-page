@@ -5,10 +5,10 @@ import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
 import CloseIcon from '@mui/icons-material/Close'
 import {useNavigate} from 'react-router-dom'
 import {useAppDispatch, useAppSelector} from '../../app/hooks'
-import {deleteUser} from '../../features/userSlice'
 import {PersistProfile, TokenAuth} from '../../interfaces/profileLocalStorage.interface'
-import {JWTToken, logOut} from "../../features/authSlice"
+import {blacklistToken, JWTToken} from "../../features/authSlice"
 import jwtDecode from "jwt-decode"
+import {deleteUser} from "../../features/userSlice";
 
 function Navbar() {
     const navigate = useNavigate()
@@ -21,12 +21,13 @@ function Navbar() {
     useEffect(() => {
         if (authUser.access === null) {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
+
             if (localStorage.getItem('persist:profile') === null) {
                 setIsUserLoggedIn(() => false)
             } else {
                 const token: TokenAuth = JSON.parse(profile.auth)
 
-                if (token.access !== null) {
+                if (token.access !== null && token.loading === "succeeded") {
                     const accessToken: JWTToken = jwtDecode(token.access)
 
                     if (accessToken.username !== null) {
@@ -42,49 +43,42 @@ function Navbar() {
             setIsUserLoggedIn(() => true)
             setUsername(accessToken.username)
         }
-    }, [authUser.access])
 
-    useEffect(() => {
-        if (authUser.access !== null) {
-            const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
-            const token: TokenAuth = JSON.parse(profile.auth)
-            if (token.access !== null) {
-                setIsUserLoggedIn(() => true)
-            } else {
-                setIsUserLoggedIn(() => false)
-            }
-        }
-    }, [authUser.access])
-
+    }, [authUser.access, authUser, authUser.loading])
 
     const deleteAnAccount = () => {
         if (username !== null) {
-            dispatch(deleteUser(username))
             setIsUserLoggedIn(() => false)
             setShowMenuPopup(() => false)
+            dispatch(deleteUser(username))
+            dispatch(blacklistToken())
+            navigate('/', {replace: false})
         }
     }
     const logOutTheUser = () => {
-        dispatch(logOut())
+        dispatch(blacklistToken())
         setIsUserLoggedIn(() => false)
         setShowMenuPopup(() => false)
-        navigate('/', {replace: true})
+        navigate('/', {replace: false})
     }
 
     return <Wrapper>
         <div className={'container'}>
-            <h1 className={'name'}>Menu</h1>
+            <h1 className={'name'}>Instagram</h1>
             <div className={'icons-container'}>
                 <AddCircleRoundedIcon className={'add-photo-icon'}
                                       onClick={() => navigate('/upload_photo', {replace: false})}/>
-                {isUserLoggedIn ? <MoreVertOutlinedIcon className={'settings-icon'}
-                                                        onClick={() => setShowMenuPopup(!showMenuPopup)}/> : ''}
+                {isUserLoggedIn ?
+                    <MoreVertOutlinedIcon className={'settings-icon'}
+                                          onClick={() => setShowMenuPopup(!showMenuPopup)}/> :
+                    <MoreVertOutlinedIcon className={'settings-icon'}
+                                          onClick={() => navigate('/login', {replace: false})}/>}
             </div>
         </div>
-        {showMenuPopup ? <MenuPopup>
+        {showMenuPopup && isUserLoggedIn ? <MenuPopup>
             <div className={'popup-window'}>
                 <div className={'close-icon'}>
-                    <CloseIcon onClick={() => navigate('/', {replace: true})}/>
+                    <CloseIcon onClick={() => setShowMenuPopup(!showMenuPopup)}/>
                 </div>
                 {<ul>
                     <li onClick={() => logOutTheUser()}>Logout</li>
@@ -92,6 +86,7 @@ function Navbar() {
                 </ul>}
             </div>
         </MenuPopup> : ''}
+
 
     </Wrapper>
 

@@ -19,7 +19,6 @@ export const Wrapper = styled.div`
     justify-content: center;
 
     .container {
-      cursor: pointer;
       width: 640px;
       border: 1px solid #D9D9D9;
       border-radius: 16px;
@@ -29,7 +28,6 @@ export const Wrapper = styled.div`
   @media screen and (min-width: 2000px) {
     .container {
       width: 720px;
-      cursor: pointer;
     }
   }
 

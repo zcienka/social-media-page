@@ -38,20 +38,29 @@ export const refreshToken = createAsyncThunk(
     }
 )
 
+export const blacklistToken = createAsyncThunk(
+    'authenticate/blacklistToken',
+    async () => {
+        const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
+        const token: TokenAuth = JSON.parse(profile.auth)
+        const {data} = await axios.post('http://127.0.0.1:8000/api/user/token/blacklist/', {refresh: token.refresh})
+        return data
+    }
+)
+
 export const authSlice = createSlice({
     name: 'authenticate',
     initialState,
-    reducers: {
-        logOut: () => initialState
-    },
     extraReducers: builder => {
         builder.addCase(authenticateUser.pending, (state) => {
-            return {...state,
+            return {
+                ...state,
                 loading: 'pending'
             }
         })
         builder.addCase(authenticateUser.fulfilled, (state, action) => {
-                return {...state,
+                return {
+                    ...state,
                     access: action.payload.access,
                     refresh: action.payload.refresh,
                     loading: 'succeeded'
@@ -59,18 +68,21 @@ export const authSlice = createSlice({
             }
         )
         builder.addCase(authenticateUser.rejected, (state) => {
-            return {...state,
+            return {
+                ...state,
                 loading: 'failed'
             }
         })
 
         builder.addCase(refreshToken.pending, (state) => {
-            return {...state,
+            return {
+                ...state,
                 loading: 'pending'
             }
         })
         builder.addCase(refreshToken.fulfilled, (state, action) => {
-                return {...state,
+                return {
+                    ...state,
                     access: action.payload.access,
                     refresh: action.payload.refresh,
                     loading: 'succeeded'
@@ -78,12 +90,32 @@ export const authSlice = createSlice({
             }
         )
         builder.addCase(refreshToken.rejected, (state) => {
-            return {...state,
-                loading: 'failed'
+            return {...state, access: null, refresh: null, loading: 'failed'}
+        })
+
+        builder.addCase(blacklistToken.pending, (state) => {
+            return {
+                ...state,
+                loading: 'pending'
             }
         })
-    }
+        builder.addCase(blacklistToken.fulfilled, (state, action) => {
+            return {
+                    ...state,
+                    access: null, refresh: null,
+                    loading: 'succeeded'
+                }
+            }
+        )
+        builder.addCase(blacklistToken.rejected, (state) => {
+            return {
+                ...state,
+                access: null, refresh: null,
+                loading: 'succeeded'
+            }
+        })
+    },
+    reducers: {}
 })
 
 export default authSlice.reducer
-export const {logOut} = authSlice.actions

@@ -39,18 +39,23 @@ function Post(props: PostList) {
     useEffect(() => {
         if (authUser.access === null) {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
-            const token: TokenAuth = JSON.parse(profile.auth)
-            if (token.access !== null) {
-                setIsUserLoggedIn(() => true)
-                const accessToken: JWTToken = jwtDecode(token.access)
 
-                setUser(() => accessToken)
-                setComment((prevState) => {
-                    return {...prevState, username: accessToken.username}
-                })
-                setComment((prevState) => {
-                    return {...prevState, post: props.id}
-                })
+            if (localStorage.getItem('persist:profile') !== null) {
+                const token: TokenAuth = JSON.parse(profile.auth)
+                if (token.access !== null && token.loading === "succeeded") {
+                    setIsUserLoggedIn(() => true)
+                    const accessToken: JWTToken = jwtDecode(token.access)
+
+                    setUser(() => accessToken)
+                    setComment((prevState) => {
+                        return {...prevState, username: accessToken.username}
+                    })
+                    setComment((prevState) => {
+                        return {...prevState, post: props.id}
+                    })
+                } else {
+                    setIsUserLoggedIn(() => false)
+                }
             } else {
                 setIsUserLoggedIn(() => false)
             }
@@ -66,7 +71,7 @@ function Post(props: PostList) {
                 return {...prevState, post: props.id}
             })
         }
-    }, [isUserLoggedIn, authUser.access, props.id, authUser])
+    }, [isUserLoggedIn, authUser.access, props.id, authUser, authUser.refresh])
 
 
     useEffect(() => {
