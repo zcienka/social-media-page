@@ -7,7 +7,7 @@ import {registerUser} from '../../../features/registerSlice'
 import {authenticateUser} from '../../../features/authSlice'
 import ErrorIcon from '@mui/icons-material/Error'
 import {getUserInfo} from '../../../features/userSlice'
-import {PersistProfile, UserAuth} from "../../../interfaces/profileLocalStorage.interface";
+import {PersistProfile, TokenAuth} from "../../../interfaces/profileLocalStorage.interface";
 
 export interface credentials {
     username: string,
@@ -49,14 +49,13 @@ function SignUp() {
         if (register.loading === 'succeeded') {
             dispatch(authenticateUser(userInfo))
         }
-    }, [userInfo, dispatch, register.loading])
+    }, [userInfo, register.loading, dispatch])
 
     useEffect(() => {
         if (authUser.loading === 'succeeded') {
-            navigate('/', {replace: false})
+            navigate('/', {replace: true})
         }
-    }, [userInfo.username, authUser, navigate])
-
+    }, [navigate, authUser.loading, dispatch])
 
     useEffect(() => {
         if (user.loading === 'succeeded') {

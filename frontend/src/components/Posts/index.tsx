@@ -11,12 +11,11 @@ function Posts() {
     const [hasMore, setHasMore] = useState(false)
     const dispatch = useAppDispatch()
 
-
     useEffect(() => {
         dispatch(getPosts(url))
     }, [url, dispatch])
 
-    const lastBookElementRef = useCallback((node: any) => {
+    const lastPostRef = useCallback((node: any) => {
         if (posts.next !== null) {
             setHasMore(true)
         } else {
@@ -42,7 +41,7 @@ function Posts() {
         {posts.results.map((post: PostList, index: number) => {
             if (posts.results.length === index + 1) {
                 return <div className={'post'} key={post.id}>
-                    <span ref={lastBookElementRef}>
+                    <span ref={lastPostRef}>
                         <Post {...post} />
                     </span>
                 </div>

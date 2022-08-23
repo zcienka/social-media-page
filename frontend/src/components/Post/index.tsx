@@ -8,7 +8,9 @@ import {useNavigate} from 'react-router-dom';
 import {addComment, CommentSend, getCommentsByPostId} from '../../features/commentSlice'
 import {Comment} from '../../features/commentSlice'
 import DeleteIcon from '@mui/icons-material/Delete'
-import {PersistProfile, UserAuth} from "../../interfaces/profileLocalStorage.interface";
+import {PersistProfile, TokenAuth} from "../../interfaces/profileLocalStorage.interface";
+import jwtDecode from "jwt-decode";
+import {JWTToken} from "../../features/authSlice";
 
 const commentInitialState = {
     username: null,
@@ -21,38 +23,57 @@ function Post(props: PostList) {
     const [showDeletePostPopup, setShowDeletePostPopup] = useState(false)
     const dateAdded = moment(props.date).fromNow()
     const [post, setPost] = useState<PostList>(props)
-    const [user, setUser] = useState<UserAuth | null>(null)
+    const [user, setUser] = useState<JWTToken | null>(null)
     const [comment, setComment] = useState<CommentSend>(commentInitialState)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const comments = useAppSelector(state => state.comment)
     const inputRef = useRef<HTMLInputElement | null>(null)
+    const authUser = useAppSelector(state => state.auth)
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
 
     useEffect(() => {
         dispatch(getCommentsByPostId(props.id))
     }, [props.id, dispatch])
 
     useEffect(() => {
-        if (localStorage.getItem("persist:profile") !== null) {
+        if (authUser.access === null) {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
-            const userProfile: UserAuth = JSON.parse(profile.auth)
+            const token: TokenAuth = JSON.parse(profile.auth)
+            if (token.access !== null) {
+                setIsUserLoggedIn(() => true)
+                const accessToken: JWTToken = jwtDecode(token.access)
 
-            setUser(() => userProfile)
+                setUser(() => accessToken)
+                setComment((prevState) => {
+                    return {...prevState, username: accessToken.username}
+                })
+                setComment((prevState) => {
+                    return {...prevState, post: props.id}
+                })
+            } else {
+                setIsUserLoggedIn(() => false)
+            }
+        } else {
+            const accessToken: JWTToken = jwtDecode(authUser.access)
+            setIsUserLoggedIn(() => true)
+
+            setUser(() => accessToken)
             setComment((prevState) => {
-                return {...prevState, username: userProfile.username}
+                return {...prevState, username: accessToken.username}
             })
             setComment((prevState) => {
                 return {...prevState, post: props.id}
             })
         }
-    }, [props.id])
+    }, [isUserLoggedIn, authUser.access, props.id, authUser])
 
 
     useEffect(() => {
-        if (user !== null && typeof user.user_id === "number") {
+        if (user !== null) {
             setIsPostLiked(props.users_like.includes(user.user_id))
         }
-    }, [user, props.users_like])
+    }, [user, user?.user_id, props.users_like])
 
     const likePost = () => {
         if (user !== null) {
@@ -96,7 +117,6 @@ function Post(props: PostList) {
         dispatch(deletePost(post.id))
         setShowDeletePostPopup((showPopup: boolean) => !showPopup)
     }
-
 
     useEffect(() => {
         dispatch(updatePost(post))
@@ -153,7 +173,7 @@ function Post(props: PostList) {
                     }
                 })}
             </div>
-            {user !== null && user.username !== null ? <div className='comment-input'>
+            {isUserLoggedIn ? <div className='comment-input'>
                 <input placeholder={'Write a comment'} ref={inputRef} onChange={(e) =>
                     setComment((prevState) => {
                         return {...prevState, description: e.target.value}

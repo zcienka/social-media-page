@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 )
 
-let persistor = persistStore(store)
+const persistor = persistStore(store)
 
 root.render(
     <React.StrictMode>

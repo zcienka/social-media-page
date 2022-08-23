@@ -1,6 +1,6 @@
-export interface UserAuth {
-    username: string | null,
-    user_id: number | null,
+export interface TokenAuth {
+    access: string | null,
+    refresh: string | null,
     loading: 'idle' | 'pending' | 'succeeded' | 'failed'
 }
 

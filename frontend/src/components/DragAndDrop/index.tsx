@@ -4,8 +4,10 @@ import File from 'react-dropzone'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import PublishPost from '../PublishPost'
 import {useNavigate} from 'react-router-dom'
-import {PersistProfile, UserAuth} from '../../interfaces/profileLocalStorage.interface'
+import {PersistProfile, TokenAuth} from '../../interfaces/profileLocalStorage.interface'
 import {Wrapper} from "./DragAndDrop.styles"
+import {JWTToken} from "../../features/authSlice";
+import jwtDecode from "jwt-decode";
 
 function DragAndDrop() {
     const [showDragAndDrop, setShowDragAndDrop] = useState(true)
@@ -18,9 +20,13 @@ function DragAndDrop() {
             setIsUserLoggedIn(() => false)
         } else {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
-            const userProfile: UserAuth = JSON.parse(profile.auth)
-            if (userProfile.username !== null) {
-                setIsUserLoggedIn(() => true)
+            const token: TokenAuth = JSON.parse(profile.auth)
+
+            if (token.access !== null) {
+                const accessToken: JWTToken = jwtDecode(token.access)
+                if (accessToken.username !== null) {
+                    setIsUserLoggedIn(() => true)
+                }
             } else {
                 setIsUserLoggedIn(() => false)
             }

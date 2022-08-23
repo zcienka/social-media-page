@@ -3,6 +3,9 @@ import React, {useState, useEffect} from 'react'
 import {addPost, PostList} from '../../features/postsSlice'
 import {useAppDispatch, useAppSelector} from '../../app/hooks'
 import {useNavigate} from "react-router-dom"
+import {PersistProfile, TokenAuth} from "../../interfaces/profileLocalStorage.interface";
+import {JWTToken} from "../../features/authSlice";
+import jwtDecode from "jwt-decode";
 
 interface Props {
     image: string,
@@ -31,11 +34,10 @@ function PublishPost(file: Props) {
     const publishPost = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        if (post.caption !== null  && post.username !== null) {
+        if (post.caption !== null && post.username !== null) {
             setPost((post: PostList) => {
                 return {...post, image: file.image}
             })
-            console.log({post})
             dispatch(addPost(post))
             navigate('/', {replace: false})
         }
@@ -59,17 +61,25 @@ function PublishPost(file: Props) {
     }
 
     useEffect(() => {
-        if (authUser.username === null || authUser.user_id === null) {
-            navigate('/login', {replace: false})
-        } else {
-            setPost((post: PostList) => {
-                return {...post, username: authUser.username}
-            })
-            setPost((post: PostList) => {
-                return {...post, image: file.image}
-            })
+        if (localStorage.getItem("persist:profile") !== null) {
+            const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
+            const token: TokenAuth = JSON.parse(profile.auth)
+
+            if (token.access !== null) {
+                const accessToken: JWTToken = jwtDecode(token.access)
+                if (accessToken.username === null || accessToken.user_id === null) {
+                    navigate('/login', {replace: false})
+                } else {
+                    setPost((post: PostList) => {
+                        return {...post, username: accessToken.username}
+                    })
+                    setPost((post: PostList) => {
+                        return {...post, image: file.image}
+                    })
+                }
+            }
         }
-    }, [authUser.user_id, authUser.username, file.image, navigate])
+    }, [authUser, file.image, navigate])
 
 
     return showPopup ? <Wrapper>

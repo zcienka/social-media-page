@@ -1,18 +1,14 @@
 import {Wrapper, MenuPopup} from './Navbar.styles'
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
-import {useDropzone} from 'react-dropzone'
-import File from 'react-dropzone'
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import CloseIcon from '@mui/icons-material/Close'
-import PublishPost from '../PublishPost'
 import {useNavigate} from 'react-router-dom'
 import {useAppDispatch, useAppSelector} from '../../app/hooks'
 import {deleteUser} from '../../features/userSlice'
-import {PersistProfile, UserAuth} from '../../interfaces/profileLocalStorage.interface'
-import {logOut} from "../../features/authSlice";
-import DragAndDrop from "../DragAndDrop"
+import {PersistProfile, TokenAuth} from '../../interfaces/profileLocalStorage.interface'
+import {JWTToken, logOut} from "../../features/authSlice"
+import jwtDecode from "jwt-decode"
 
 function Navbar() {
     const navigate = useNavigate()
@@ -23,25 +19,42 @@ function Navbar() {
     const authUser = useAppSelector(state => state.auth)
 
     useEffect(() => {
-        if (localStorage.getItem('persist:profile') === null) {
-            setIsUserLoggedIn(() => false)
-        } else {
+        if (authUser.access === null) {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
-            const userProfile: UserAuth = JSON.parse(profile.auth)
-            if (userProfile.username !== null) {
+            if (localStorage.getItem('persist:profile') === null) {
+                setIsUserLoggedIn(() => false)
+            } else {
+                const token: TokenAuth = JSON.parse(profile.auth)
+
+                if (token.access !== null) {
+                    const accessToken: JWTToken = jwtDecode(token.access)
+
+                    if (accessToken.username !== null) {
+                        setIsUserLoggedIn(() => true)
+                        setUsername(accessToken.username)
+                    }
+                } else {
+                    setIsUserLoggedIn(() => false)
+                }
+            }
+        } else {
+            const accessToken: JWTToken = jwtDecode(authUser.access)
+            setIsUserLoggedIn(() => true)
+            setUsername(accessToken.username)
+        }
+    }, [authUser.access])
+
+    useEffect(() => {
+        if (authUser.access !== null) {
+            const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
+            const token: TokenAuth = JSON.parse(profile.auth)
+            if (token.access !== null) {
                 setIsUserLoggedIn(() => true)
-                setUsername(userProfile.username)
             } else {
                 setIsUserLoggedIn(() => false)
             }
         }
-    }, [])
-
-    useEffect(() => {
-        if (authUser.username !== null) {
-            setIsUserLoggedIn(() => true)
-        }
-    }, [authUser])
+    }, [authUser.access])
 
 
     const deleteAnAccount = () => {
@@ -55,6 +68,7 @@ function Navbar() {
         dispatch(logOut())
         setIsUserLoggedIn(() => false)
         setShowMenuPopup(() => false)
+        navigate('/', {replace: true})
     }
 
     return <Wrapper>
@@ -62,7 +76,7 @@ function Navbar() {
             <h1 className={'name'}>Menu</h1>
             <div className={'icons-container'}>
                 <AddCircleRoundedIcon className={'add-photo-icon'}
-                                      onClick={() =>  navigate('/upload_photo', {replace: false})}/>
+                                      onClick={() => navigate('/upload_photo', {replace: false})}/>
                 {isUserLoggedIn ? <MoreVertOutlinedIcon className={'settings-icon'}
                                                         onClick={() => setShowMenuPopup(!showMenuPopup)}/> : ''}
             </div>
@@ -70,7 +84,7 @@ function Navbar() {
         {showMenuPopup ? <MenuPopup>
             <div className={'popup-window'}>
                 <div className={'close-icon'}>
-                    <CloseIcon onClick={() => setShowMenuPopup(!showMenuPopup)}/>
+                    <CloseIcon onClick={() => navigate('/', {replace: true})}/>
                 </div>
                 {<ul>
                     <li onClick={() => logOutTheUser()}>Logout</li>

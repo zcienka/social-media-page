@@ -63,14 +63,6 @@ export const updatePost = createAsyncThunk(
     }
 )
 
-export const getPost = createAsyncThunk(
-    'posts/getPost',
-    async (id: string) => {
-        const {data} = await axios.get(`http://127.0.0.1:8000/api/posts/${id}`)
-        return data
-    }
-)
-
 export const deletePost = createAsyncThunk(
     'posts/deletePost',
     async (id: string | null) => {
@@ -123,19 +115,6 @@ export const postsSlice = createSlice({
             state.loading = 'succeeded'
         })
         builder.addCase(updatePost.rejected, (state) => {
-            state.loading = 'failed'
-        })
-
-        builder.addCase(getPost.pending, (state) => {
-            state.loading = 'pending'
-        })
-        builder.addCase(getPost.fulfilled, (state, action) => {
-            state.results = []
-            state.results.push(action.payload)
-            state.results = Array.from(new Map(state.results.map((x) => [x['id'], x])).values())
-            state.loading = 'succeeded'
-        })
-        builder.addCase(getPost.rejected, (state) => {
             state.loading = 'failed'
         })
 

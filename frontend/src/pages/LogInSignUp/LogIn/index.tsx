@@ -2,10 +2,11 @@ import {Wrapper} from '../LogInSignUp.styles'
 import React, {useEffect, useState} from 'react'
 import {useAppDispatch, useAppSelector} from '../../../app/hooks'
 import {Link, useNavigate} from 'react-router-dom'
-import {authenticateUser} from '../../../features/authSlice'
+import {authenticateUser, JWTToken} from '../../../features/authSlice'
 import LinearProgress from '@mui/material/LinearProgress'
 import ErrorIcon from '@mui/icons-material/Error'
-import {PersistProfile, UserAuth} from "../../../interfaces/profileLocalStorage.interface";
+import {PersistProfile, TokenAuth} from "../../../interfaces/profileLocalStorage.interface";
+import jwtDecode from "jwt-decode";
 
 export interface Credentials {
     username: string,
@@ -37,10 +38,13 @@ function LogIn() {
     useEffect(() => {
         if (authUser.loading === 'succeeded' || localStorage.getItem("persist:profile") !== null) {
             const profile: PersistProfile = JSON.parse(localStorage.getItem('persist:profile') || '{}')
-            const userProfile: UserAuth = JSON.parse(profile.auth)
+            const token: TokenAuth = JSON.parse(profile.auth)
 
-            if(userProfile.username !== null) {
-                navigate('/', {replace: false})
+            if (token.access !== null) {
+                const accessToken: JWTToken = jwtDecode(token.access)
+                if (accessToken.username !== null) {
+                    navigate('/', {replace: true})
+                }
             }
         }
     }, [navigate, authUser])
