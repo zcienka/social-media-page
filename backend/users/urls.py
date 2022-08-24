@@ -2,12 +2,14 @@ from . import views
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
+    TokenBlacklistView,
 )
 from .views import MyTokenObtainPairView
 
 urlpatterns = [
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
     path('register/', views.user_list_create_view, name='user_register'),
     path('<slug:username>/', views.user_detail_update_view, name='user_detail'),
     path('<slug:username>/delete', views.user_delete_view, name='user_delete'),
