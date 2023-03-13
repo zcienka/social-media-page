@@ -1,5 +1,5 @@
 
-# Instagram clone
+# Social media
 An application built with React, Redux Toolkit and Django.
 
 ![Screenshot](screenshots/screenshot3.png)
