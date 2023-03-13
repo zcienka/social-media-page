@@ -64,7 +64,7 @@ function Navbar() {
 
     return <Wrapper>
         <div className={'container'}>
-            <h1 className={'name'}>Instagram</h1>
+            <h1 className={'name'}>Social media</h1>
             <div className={'icons-container'}>
                 <AddCircleRoundedIcon className={'add-photo-icon'}
                                       onClick={() => navigate('/upload_photo', {replace: false})}/>

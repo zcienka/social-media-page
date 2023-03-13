@@ -1,14 +1,25 @@
 
-## Instagram clone
+# Instagram clone
 An application built with React, Redux Toolkit and Django.
 
-![Screenshot](screenshot.png)
+![Screenshot](screenshots/screenshot3.png)
 
-The app allows users to:
+
+## The app allows users to:
 - upload and delete a post,
 - comment a post,
 - like a post,
 - login, logout and delete an account
+
+# Technologies used
+- React
+- Redux Toolkit
+- CSS and Styled Components
+- Django
+
+![Screenshot](screenshots/screenshot2.png)
+![Login page](screenshots/screenshot1.png)
+![Login page](screenshots/screenshot4.png)
 
 ## Installation and Setup Instructions
 ### React
